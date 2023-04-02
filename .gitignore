@@ -1,0 +1,10 @@
+*.txt
+*.aux
+*.o
+*.d
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.zip
+watopoly
