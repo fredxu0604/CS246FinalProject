@@ -51,7 +51,6 @@ public:
 
   void buyProperty(Property *property);
 
-  PlayerInfo getInfo();
 };
 
 #endif

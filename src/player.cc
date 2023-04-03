@@ -194,6 +194,6 @@ void Player::buyProperty(Property *property) {
   notifyObservers();
 }
 
-PlayerInfo Player::getInfo() {
+PlayerInfo Player::getInfo() const {
   return PlayerInfo{name, avatar, balance, ownedProperties, currSquare};
 }
