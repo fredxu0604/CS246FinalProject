@@ -166,6 +166,7 @@ void Player::addFunds(size_t amount) { balance += amount; }
 
 void Player::addProperty(Property *property) {
   ownedProperties.emplace_back(property);
+  property->setOwner(this);
 }
 
 void Player::removeProperty(Property *property) {
@@ -187,7 +188,6 @@ void Player::buyProperty(Property *property) {
     throw InsufficientFunds("not enough money to buy this property");
 
   makePayment(propertyInfo.cost);
-  property->setOwner(this);
   addProperty(property);
 
   currState = State::BuyProperty;
