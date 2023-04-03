@@ -1,7 +1,6 @@
 #include "player.h"
 #include "gameexception.h"
 #include "squareinfo.h"
-#include <random>
 using namespace std;
 
 Player::Player(string name, char avatar, Square *currSquare,

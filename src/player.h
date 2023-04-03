@@ -5,7 +5,6 @@
 #include "square.h"
 #include "state.h"
 #include "subject.h"
-#include <random>
 #include <vector>
 
 class Player : public Subject<PlayerInfo, State> {
