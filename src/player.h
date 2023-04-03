@@ -5,6 +5,7 @@
 #include "square.h"
 #include "state.h"
 #include "subject.h"
+#include "property.h"
 #include <vector>
 
 class Player : public Subject<PlayerInfo, State> {
@@ -13,15 +14,15 @@ class Player : public Subject<PlayerInfo, State> {
   size_t balance;
   State currState;
   Square *currSquare;
-  std::vector<Square *> ownedProperties;
+  std::vector<Property *> ownedProperties;
 
   bool hasMonopoly(std::string targetGroup, const int groupSize);
-  Square *validateImprovement(std::string propertyName);
-  Square *validateMortgage(std::string propertyName);
+  Property *validateImprovement(std::string propertyName);
+  Property *validateMortgage(std::string propertyName);
 
 public:
   Player(std::string name, char avatar, Square *currSquare,
-         std::vector<Square *> ownedProperties, size_t balance = 0);
+         std::vector<Property *> ownedProperties, size_t balance = 0);
 
   PlayerInfo getInfo() const override;
 
@@ -35,12 +36,22 @@ public:
 
   void unmortgage(std::string propertyName); // similar to above
 
-  bool makePayment(size_t amount); // Returns true if the player has enough
+  bool makePayment(size_t amount, bool notify = false); // Returns true if the player has enough
                                    // money to make the payment
                                    //   The player can declare bankruptcy if
                                    //   this returns false
 
   void moveTo(Square *newLocation); // moves the player to a new square
+
+  void addFunds(size_t amount);
+
+  void addProperty(Property *property);
+
+  void removeProperty(Property *property);
+
+  void buyProperty(Property *property);
+
+  PlayerInfo getInfo();
 };
 
 #endif

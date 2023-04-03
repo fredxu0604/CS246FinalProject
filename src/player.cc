@@ -4,7 +4,7 @@
 using namespace std;
 
 Player::Player(string name, char avatar, Square *currSquare,
-               vector<Square *> ownedProperties, size_t balance)
+               vector<Property *> ownedProperties, size_t balance)
     : Subject{}, name{name}, avatar{avatar}, balance{balance},
       currSquare{currSquare}, ownedProperties{ownedProperties} {}
 
@@ -24,8 +24,8 @@ bool Player::hasMonopoly(string targetGroup, const int groupSize) {
   return soFar == groupSize;
 }
 
-Square *Player::validateImprovement(string propertyName) {
-  Square *targetProperty = nullptr;
+Property *Player::validateImprovement(string propertyName) {
+  Property *targetProperty = nullptr;
   for (auto property : ownedProperties) {
     if (property->getInfo().name == propertyName) {
       targetProperty = property;
@@ -50,7 +50,7 @@ Square *Player::validateImprovement(string propertyName) {
 }
 
 void Player::buyImprovement(std::string propertyName) {
-  Square *targetProperty = nullptr;
+  Property *targetProperty = nullptr;
 
   try {
     targetProperty = validateImprovement(propertyName);
@@ -77,7 +77,7 @@ void Player::buyImprovement(std::string propertyName) {
 }
 
 void Player::sellImprovement(string propertyName) {
-  Square *targetProperty = nullptr;
+  Property *targetProperty = nullptr;
 
   try {
     targetProperty = validateImprovement(propertyName);
@@ -100,7 +100,7 @@ void Player::sellImprovement(string propertyName) {
 }
 
 void Player::mortgage(string propertyName) {
-  Square *targetProperty = nullptr;
+  Property *targetProperty = nullptr;
 
   try {
     targetProperty = validateMortgage(propertyName);
@@ -122,7 +122,7 @@ void Player::mortgage(string propertyName) {
 }
 
 void Player::unmortgage(string propertyName) {
-  Square *targetProperty = nullptr;
+  Property *targetProperty = nullptr;
 
   try {
     targetProperty = validateMortgage(propertyName);
@@ -146,12 +146,54 @@ void Player::unmortgage(string propertyName) {
   notifyObservers();
 }
 
-bool Player::makePayment(size_t amount) {
+bool Player::makePayment(size_t amount, bool notify) {
   if (amount > balance)
     return false;
 
   balance -= amount;
+  if (notify)
+    notifyObservers();
   return true;
 }
 
-void Player::moveTo(Square *newLocation) { currSquare = newLocation; }
+void Player::moveTo(Square *newLocation) {
+  currSquare = newLocation;
+  currState = State::Move;
+  notifyObservers();
+}
+
+void Player::addFunds(size_t amount) { balance += amount; }
+
+void Player::addProperty(Property *property) {
+  ownedProperties.emplace_back(property);
+}
+
+void Player::removeProperty(Property *property) {
+  vector<Property *>::iterator it = ownedProperties.begin();
+
+  for (; it != ownedProperties.end(); it++) {
+    if (*it == property) {
+      ownedProperties.erase(it);
+      property->setOwner(nullptr);
+      break;
+    }
+  }
+}
+
+void Player::buyProperty(Property *property) {
+  SquareInfo propertyInfo = property->getInfo();
+
+  if (propertyInfo.cost > balance)
+    throw InsufficientFunds("not enough money to buy this property");
+
+  makePayment(propertyInfo.cost);
+  property->setOwner(this);
+  addProperty(property);
+
+  currState = State::BuyProperty;
+  notifyObservers();
+}
+
+PlayerInfo Player::getInfo() {
+  return PlayerInfo{name, avatar, balance, ownedProperties, currSquare};
+}

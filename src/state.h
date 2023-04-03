@@ -8,7 +8,10 @@ enum class State {
   Mortgage,
   Unmortgage,
   Bankrupt,
-  EndTurn
+  EndTurn,
+  Earn,
+  PayTuition,
+  BuyProperty
 };
 
 #endif

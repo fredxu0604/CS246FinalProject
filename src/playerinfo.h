@@ -3,12 +3,13 @@
 #include "square.h"
 #include <string>
 #include <vector>
+#include "property.h"
 
 struct PlayerInfo {
   std::string name;
   char avatar;
   size_t balance;
-  std::vector<Square> ownedProperties;
+  std::vector<Property *> ownedProperties;
   Square &currSquare;
 };
 
