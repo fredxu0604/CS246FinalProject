@@ -2,13 +2,13 @@
 #define __STATE_H__
 
 enum class State {
-    Move,
-    Trade,
-    Improve,
-    Mortgage,
-    Unmortgage,
-    Bankrupt,
-    EndTurn
+  Move,
+  Trade,
+  Improve,
+  Mortgage,
+  Unmortgage,
+  Bankrupt,
+  EndTurn
 };
 
 #endif

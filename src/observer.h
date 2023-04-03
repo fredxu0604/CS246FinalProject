@@ -5,7 +5,7 @@ template <typename InfoType, typename StateType> class Subject;
 class Cell;
 
 template <typename InfoType, typename StateType> class Observer {
- public:
+public:
   virtual void notify(Subject<InfoType, StateType> &whoFrom) = 0; // pass the >
   virtual ~Observer() = default;
 };
