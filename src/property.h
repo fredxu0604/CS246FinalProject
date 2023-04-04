@@ -2,6 +2,9 @@
 #define __PROPERTY_H__
 #include "square.h"
 
+
+enum class Group {Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math};
+
 class Property: public Square {
     protected:
     size_t cost;
