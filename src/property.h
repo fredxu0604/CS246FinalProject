@@ -71,7 +71,7 @@ const map<string, int> improvementCostMap = {
 };
 
 
-const map<string, map<int, int>> tuitionCost = {
+const map<string, map<int, int>> tuitionCostMap = {
     {"AL", {{0, 2}, {1, 10}, {2, 30}, {3, 90}, {4, 160}, {5, 250}}},
     {"ML", {{0, 4}, {1, 20}, {2, 60}, {3, 180}, {4, 320}, {5, 450}}},
     {"ECH", {{0, 6}, {1, 30}, {2, 90}, {3, 270}, {4, 400}, {5, 550}}},

@@ -7,7 +7,6 @@ using namespace std;
 
 Property::Property(string name): Square(name) {
     owner = nullptr;
-    numImprove = 0;
     group = groupMap.at(name);   //using at because map[] only support non constant value; here is constant map
 }
 
@@ -35,18 +34,4 @@ SquareInfo Property::getInfo() const {
     };
 }
 
-void Property::improve(){
-    if (numImprove == 5) {
-        throw CannotImprove{"Reaches Improvement Maximum"};
-    } else {
-        numImprove++;
-    }
-}
 
-void Property::unimprove(){
-    if (numImprove == 0) {
-        throw CannotImprove{"No Improvement to be unimproved"};
-    } else {
-        numImprove--;
-    }
-}

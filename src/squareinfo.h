@@ -8,6 +8,7 @@ struct SquareInfo {
     bool isOwned;
     size_t cost;
     Player* owner;
+    int numImprove;
 };
 
 #endif

@@ -1,12 +1,13 @@
 #include "property.h"
 #include "squareinfo.h"
+#include <string>
 
 class Acedemic: public Property {
     protected:
-    unsigned int numImprovement;
+    unsigned int numImprove;
     public:
-    Acedemic();
-    void addImprovement();
+    Acedemic(string name);
+    void improve();
+    void unimprove();
     int getVisitFee() const override;
-    SquareInfo getInfo() const override;
 };
