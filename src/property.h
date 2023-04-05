@@ -6,7 +6,33 @@
 using namespace std;
 
 
+
 enum class Group {Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math};
+
+const map<string, Group> groupMap = {
+    {"AL", Group::Arts1},
+    {"ML", Group::Arts1},
+    {"ECH", Group::Arts2},
+    {"PAS", Group::Arts2},
+    {"HH", Group::Arts2},
+    {"RCH", Group::Eng},
+    {"DWE", Group::Eng},
+    {"CPH", Group::Eng},
+    {"LHI", Group::Health},
+    {"BMH", Group::Health},
+    {"OPT", Group::Health},
+    {"EV1", Group::Env},
+    {"EV2", Group::Env},
+    {"EV3", Group::Env},
+    {"PHYS", Group::Sci1},
+    {"B1", Group::Sci1},
+    {"B2", Group::Sci1},
+    {"EIT", Group::Sci2},
+    {"ESC", Group::Sci2},
+    {"C2", Group::Sci2},
+    {"MC", Group::Math},
+    {"DC", Group::Math}
+};
 
 const map<string, int> purchaseCostMap = {
     {"AL", 40},
@@ -74,16 +100,13 @@ const map<string, map<int, int>> tuitionCost = {
 
 class Property: public Square {
     protected:
-    size_t cost;
+    Group group;
     Player* owner;
     public:
-    Property(string name, size_t cost);
+    Property(string name);
+    virtual int getVisitFee() const;
     SquareInfo getInfo() const override;
-    bool isProperty() const override;
-    bool isOwned() const override;
-    size_t getCost() const;
-    Player* getOwner() override;
-    void setOwner(Player* owner);
+    void setOwner(Player* player);
 };
 
 #endif
