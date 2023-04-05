@@ -102,8 +102,10 @@ class Property: public Square {
     protected:
     Group group;
     Player* owner;
+    int numImprove;
     public:
     Property(string name);
+    void improve();
     virtual int getVisitFee() const;
     SquareInfo getInfo() const override;
     void setOwner(Player* player);

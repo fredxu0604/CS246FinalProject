@@ -26,4 +26,11 @@ public:
   std::string getMessage() const;
 };
 
+class CannotImprove {
+  std::string message;
+public:
+  CannotImprove(std::string message = "");
+  std::string getMessage() const;
+};
+
 #endif
