@@ -42,3 +42,11 @@ void Property::improve(){
         numImprove++;
     }
 }
+
+void Property::unimprove(){
+    if (numImprove == 0) {
+        throw CannotImprove{"No Improvement to be unimproved"};
+    } else {
+        numImprove--;
+    }
+}

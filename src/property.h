@@ -106,6 +106,7 @@ class Property: public Square {
     public:
     Property(string name);
     void improve();
+    void unimprove();
     virtual int getVisitFee() const;
     SquareInfo getInfo() const override;
     void setOwner(Player* player);
