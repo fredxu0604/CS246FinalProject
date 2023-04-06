@@ -9,7 +9,7 @@ using namespace std;
 
 enum class Group {Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math};
 
-const map<string, Group> groupMap = {
+const map<string, Group> propertyGroupMap = {
     {"AL", Group::Arts1},
     {"ML", Group::Arts1},
     {"ECH", Group::Arts2},
@@ -32,6 +32,17 @@ const map<string, Group> groupMap = {
     {"C2", Group::Sci2},
     {"MC", Group::Math},
     {"DC", Group::Math}
+};
+
+const map<Group, std::vector<std::string>> groupPropertyMap = {
+    {Group::Arts1, vector<std::string>{"AL", "ML"}},
+    {Group::Arts2, vector<std::string>{"ECH", "PAS", "HH"}},
+    {Group::Eng, vector<std::string>{"RCH", "DWE", "CPH"}},
+    {Group::Health, vector<std::string>{"LHI", "BMH", "OPT"}},
+    {Group::Env, vector<std::string>{"EV1", "EV2", "EV3"}},
+    {Group::Sci1, vector<std::string>{"PHYS", "B1", "B2"}},
+    {Group::Sci2, vector<std::string>{"EIT", "ESC", "C2"}},
+    {Group::Math, vector<std::string>{"MC", "DC"}}
 };
 
 const map<string, int> purchaseCostMap = {

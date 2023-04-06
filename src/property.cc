@@ -7,7 +7,7 @@ using namespace std;
 
 Property::Property(string name): Square(name) {
     owner = nullptr;
-    group = groupMap.at(name);   //using at because map[] only support non constant value; here is constant map
+    group = propertyGroupMap.at(name);   //using at because map[] only support non constant value; here is constant map
 }
 
 
