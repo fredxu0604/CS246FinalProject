@@ -27,7 +27,7 @@ bool Player::hasMonopoly(const string &propertyName) {
 
   vector<string> group;
 
-  for (auto &p : groups) {
+  for (auto &p : groupPropertyMap) {
     bool found = false;
     for (auto &bldg : p.second) {
 
@@ -137,7 +137,7 @@ void Player::mortgage(const string &propertyName) {
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
 
   try {
-    targetProperty->mortgage();
+    targetProperty->setMortgaged();
     balance += targetPropertyInfo.mortgageLoan;
   } catch (Disallowed &e) {
     throw;
@@ -162,7 +162,7 @@ void Player::unmortgage(const string &propertyName) {
     throw InsufficientFunds{"Not enough money to unmortgage this property."};
 
   try {
-    targetProperty->unmortgage();
+    targetProperty->setUnmortgaged();
     makePayment(targetPropertyInfo.unmortgageCost);
   } catch (Disallowed &e) {
     throw;
