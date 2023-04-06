@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "player.h"
 #include "squareinfo.h"
 
 using namespace std;
