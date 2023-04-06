@@ -16,7 +16,7 @@ class Player : public Subject<PlayerInfo, State> {
   Square *currSquare;
   std::vector<Property *> ownedProperties;
 
-  bool owns(const std::string &propertyName);
+  
   bool hasMonopoly(const std::string &propertyName);
   Property *validateImprovement(const std::string &propertyName);
   Property *validateMortgage(const std::string &propertyName);
@@ -26,6 +26,8 @@ public:
          std::vector<Property *> ownedProperties, size_t balance = 0);
 
   PlayerInfo getInfo() const override;
+
+  bool owns(const std::string &propertyName);
 
   void declareBankruptcy(); // player declares bankruptcy
 
