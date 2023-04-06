@@ -4,7 +4,8 @@
 class Gym: public Property {
     public:
     Gym();
-    void addImprovement();
+    void improve() override;
+    void unimprove() override;
     size_t getVisitFee() const override;
     SquareInfo getInfo() const override;
 };

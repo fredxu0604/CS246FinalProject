@@ -1,8 +1,15 @@
 #include "gym.h"
 #include "player.h"
 #include "dice.h"
+#include "gameexception.h"
 
+void Gym::improve() {
+    throw Disallowed{"Improvement on residence is not allowed"};
+}
 
+void Gym::unimprove() {
+    throw Disallowed{"Improvement on residence is not allowed"};
+}
 size_t Gym::getVisitFee() const {
     // check whether it's owned by someone
     if (! owner) {

@@ -142,6 +142,8 @@ class Property: public Square {
     Property(string name);
     void setMortgaged();
     void setUnmortgaged();
+    virtual void improve();
+    virtual void unimprove();
     virtual size_t getVisitFee() const;
     virtual SquareInfo getInfo() const;
     void setOwner(Player* player);

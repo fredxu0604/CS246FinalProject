@@ -5,11 +5,17 @@
 #include "squareinfo.h"
 #include "player.h"
 #include "dice.h"
-
-
-
+#include "gameexception.h"
 
 Residence::Residence(string name): Property{name} {}
+
+void Residence::improve() {
+    throw Disallowed{"Improvement on residence is not allowed"};
+}
+
+void Residence::unimprove() {
+    throw Disallowed{"Improvement on residence is not allowed"};
+}
 
 size_t Residence::getVisitFee() const {
     // check whether it's owned by someone

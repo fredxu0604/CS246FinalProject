@@ -7,8 +7,8 @@ class Acedemic: public Property {
     unsigned int numImprove;
     public:
     Acedemic(string name);
-    void improve();
-    void unimprove();
+    void improve() override;
+    void unimprove() override;
     size_t getVisitFee() const override;
     SquareInfo getInfo() const override;
 };
