@@ -10,4 +10,5 @@ class Acedemic: public Property {
     void improve();
     void unimprove();
     int getVisitFee() const override;
+    SquareInfo getInfo() const override;
 };
