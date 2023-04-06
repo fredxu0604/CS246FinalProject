@@ -1,8 +1,10 @@
 #include "gym.h"
 #include "player.h"
 #include "dice.h"
+#include <string>
 #include "gameexception.h"
 
+Gym::Gym(string name): Property{name} {}
 void Gym::improve() {
     throw Disallowed{"Improvement on residence is not allowed"};
 }
