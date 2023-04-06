@@ -1,9 +1,27 @@
 #include "gym.h"
+#include "player.h"
+#include "dice.h"
 
 
-
-int Gym::getVisitFee() const {
-
+size_t Gym::getVisitFee() const {
+    // check whether it's owned by someone
+    if (! owner) {
+        return 0;
+    } else {
+        //check how many gyms are owned by the player
+        int gymOwned = 0;
+        for (auto g : residenceGymMap.at(PropertyType::Gym)) {
+            if (owner->owns(g)) {
+                gymOwned++;
+            }
+        }
+        Dice d1, d2;
+        if (gymOwned == 1) {
+            size_t fee = (d1.roll() + d2.roll()) * 4;
+        } else {
+            size_t fee = (d1.roll() + d2.roll()) * 10;
+        }
+    }
 }
 
 

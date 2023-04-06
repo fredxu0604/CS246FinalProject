@@ -5,7 +5,7 @@
 #include <string>
 using namespace std;
 
-
+class Player;
 
 enum class Group {Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math};
 
@@ -48,7 +48,14 @@ const map<Group, std::vector<std::string>> groupPropertyMap = {
     {Group::Math, vector<std::string>{"MC", "DC"}},
 };
 
-const map<size_t, size_t> residenceRentMap = {
+const map<PropertyType, std::vector<std::string>> residenceGymMap = {
+    {PropertyType::Gym, vector<std::string>{"PAC", "CIF"}},
+    {PropertyType::Residence, vector<std::string>{"MKV", "UWP", "V1", "REV"}},
+};
+
+
+
+const map<int, size_t> residenceRentMap = {
     {1, 25},
     {2, 50},
     {3, 100},
@@ -135,7 +142,7 @@ class Property: public Square {
     Property(string name);
     void setMortgaged();
     void setUnmortgaged();
-    virtual int getVisitFee() const;
+    virtual size_t getVisitFee() const;
     virtual SquareInfo getInfo() const;
     void setOwner(Player* player);
 };

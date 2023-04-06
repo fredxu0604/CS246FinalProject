@@ -25,9 +25,13 @@ void Acedemic::unimprove(){
     }
 }
 
-int Acedemic::getVisitFee() const {
-    int tuition = tuitionCostMap.at(name).at(numImprove);
-    return tuition;
+size_t Acedemic::getVisitFee() const {
+    if (owner) {
+        size_t tuition = tuitionCostMap.at(name).at(numImprove);
+        return tuition;
+    }
+    return 0;
+
 }
 
 SquareInfo Acedemic::getInfo() const {

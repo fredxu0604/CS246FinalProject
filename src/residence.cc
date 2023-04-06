@@ -3,13 +3,28 @@
 #include <map>
 #include <string>
 #include "squareinfo.h"
+#include "player.h"
+#include "dice.h"
+
+
 
 
 Residence::Residence(string name): Property{name} {}
 
-int Residence::getVisitFee() const {
-    int tuition = tuitionCostMap.at(name).at(numImprove);
-    return tuition;
+size_t Residence::getVisitFee() const {
+    // check whether it's owned by someone
+    if (! owner) {
+        return 0;
+    } else {
+        //check how many gyms are owned by the player
+        int residenceOwned = 0;
+        for (auto r : residenceGymMap.at(PropertyType::Residence)) {
+            if (owner->owns(r)) {
+                residenceOwned++;
+            }
+        }
+        return residenceRentMap.at(residenceOwned);
+    }
 }
 
 
