@@ -1,9 +1,18 @@
 #include "player.h"
 #include "gameexception.h"
+#include "property.h"
 #include "squareinfo.h"
 using namespace std;
 
-Player::Player(string name, char avatar, Square *currSquare,
+bool Player::owns(const string &propertyName) {
+  for (auto property : ownedProperties) {
+    if (property->getInfo().name == propertyName)
+      return true;
+  }
+  return false;
+}
+
+Player::Player(const string &name, char avatar, Square *currSquare,
                vector<Property *> ownedProperties, size_t balance)
     : Subject{}, name{name}, avatar{avatar}, balance{balance},
       currSquare{currSquare}, ownedProperties{ownedProperties} {}
@@ -13,18 +22,36 @@ void Player::declareBankruptcy() { // assume that player can go bankrupt
   notifyObservers();
 }
 
-bool Player::hasMonopoly(string targetGroup, const int groupSize) {
+bool Player::hasMonopoly(const string &propertyName) {
   int soFar = 0;
 
-  for (auto property : ownedProperties) {
-    if (property->getInfo().group == targetGroup)
+  vector<string> group;
+
+  for (auto &p : groups) {
+    bool found = false;
+    for (auto &bldg : p.second) {
+
+      if (bldg == propertyName) {
+        group = p.second;
+        found = true;
+        break;
+      }
+    }
+    if (found)
+      break;
+  }
+
+  int groupSize = group.size();
+
+  for (auto &candidateName : group) {
+    if (owns(candidateName))
       ++soFar;
   }
 
   return soFar == groupSize;
 }
 
-Property *Player::validateImprovement(string propertyName) {
+Property *Player::validateImprovement(const string &propertyName) {
   Property *targetProperty = nullptr;
   for (auto property : ownedProperties) {
     if (property->getInfo().name == propertyName) {
@@ -41,15 +68,14 @@ Property *Player::validateImprovement(string propertyName) {
   // property has been found and is now pointed to.
 
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
-  int targetGroupSize = targetProperty->getGroup().size();
 
-  if (!hasMonopoly(targetPropertyInfo.monopolyGroup, targetGroupSize)) {
+  if (!hasMonopoly(targetPropertyInfo.name)) {
     throw Disallowed{"You do not own all properties in this monopoly group."};
   }
   return targetProperty;
 }
 
-void Player::buyImprovement(std::string propertyName) {
+void Player::buyImprovement(const string &propertyName) {
   Property *targetProperty = nullptr;
 
   try {
@@ -76,7 +102,7 @@ void Player::buyImprovement(std::string propertyName) {
   notifyObservers();
 }
 
-void Player::sellImprovement(string propertyName) {
+void Player::sellImprovement(const string &propertyName) {
   Property *targetProperty = nullptr;
 
   try {
@@ -88,7 +114,7 @@ void Player::sellImprovement(string propertyName) {
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
 
   try {
-    targetProperty->unImprove();
+    targetProperty->unimprove();
     balance += targetPropertyInfo.improvementRefund;
 
   } catch (Disallowed &e) {
@@ -99,7 +125,7 @@ void Player::sellImprovement(string propertyName) {
   notifyObservers();
 }
 
-void Player::mortgage(string propertyName) {
+void Player::mortgage(const string &propertyName) {
   Property *targetProperty = nullptr;
 
   try {
@@ -121,7 +147,7 @@ void Player::mortgage(string propertyName) {
   notifyObservers();
 }
 
-void Player::unmortgage(string propertyName) {
+void Player::unmortgage(const string &propertyName) {
   Property *targetProperty = nullptr;
 
   try {
