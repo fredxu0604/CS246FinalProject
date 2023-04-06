@@ -15,8 +15,8 @@ void Acedemic::improve(){
     } else {
         numImprove++;
     }
-}
 
+}
 void Acedemic::unimprove(){
     if (numImprove == 0) {
         throw CannotImprove{"No Improvement to be unimproved"};
@@ -33,21 +33,28 @@ int Acedemic::getVisitFee() const {
 SquareInfo Acedemic::getInfo() const {
     bool isOwned;
     bool isProperty = true;
-    bool isAcedemic = true;
     if (owner) {
         isOwned = true;
     } else {
         isOwned = false;
     }
-
-    unsigned int purchaseCost = purchaseCostMap.at(name);
+    size_t purchaseCost = purchaseCostMap.at(name);
+    size_t improveCost = improvementCostMap.at(name);
+    size_t mortgageLoan = purchaseCost / 2;
+    size_t unmortgageCost = purchaseCost * 6 / 10;
+    size_t improveRefund = improveCost / 2;
     return SquareInfo{
         name,
         isProperty,
-        isAcedemic,
+        PropertyType::Acedemic,
         isOwned,
+        isMortgaged,
         purchaseCost,
         owner,
-        numImprove
+        numImprove,
+        improveCost,
+        mortgageLoan,
+        unmortgageCost,
+        improveRefund
     };
 }

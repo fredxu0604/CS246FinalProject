@@ -9,6 +9,9 @@ using namespace std;
 
 enum class Group {Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math};
 
+enum class PropertyType {Acedemic, Residence, Gym};
+
+
 const map<string, Group> propertyGroupMap = {
     {"AL", Group::Arts1},
     {"ML", Group::Arts1},
@@ -42,10 +45,17 @@ const map<Group, std::vector<std::string>> groupPropertyMap = {
     {Group::Env, vector<std::string>{"EV1", "EV2", "EV3"}},
     {Group::Sci1, vector<std::string>{"PHYS", "B1", "B2"}},
     {Group::Sci2, vector<std::string>{"EIT", "ESC", "C2"}},
-    {Group::Math, vector<std::string>{"MC", "DC"}}
+    {Group::Math, vector<std::string>{"MC", "DC"}},
 };
 
-const map<string, int> purchaseCostMap = {
+const map<size_t, size_t> residenceRentMap = {
+    {1, 25},
+    {2, 50},
+    {3, 100},
+    {4, 200}
+};
+
+const map<string, size_t> purchaseCostMap = {
     {"AL", 40},
     {"ML", 60},
     {"ECH", 100},
@@ -67,10 +77,16 @@ const map<string, int> purchaseCostMap = {
     {"ESC", 300},
     {"C2", 320},
     {"MC", 350},
-    {"DC", 400}
+    {"DC", 400},
+    {"CIF", 150},
+    {"PAC", 150},
+    {"MKV", 200},
+    {"UWP", 200},
+    {"V1", 200},
+    {"REV", 200}
 };
 
-const map<string, int> improvementCostMap = {
+const map<string, size_t> improvementCostMap = {
     {"Arts1", 50},
     {"Arts2", 50},
     {"Eng", 100},
@@ -82,7 +98,7 @@ const map<string, int> improvementCostMap = {
 };
 
 
-const map<string, map<int, int>> tuitionCostMap = {
+const map<string, map<size_t, size_t>> tuitionCostMap = {
     {"AL", {{0, 2}, {1, 10}, {2, 30}, {3, 90}, {4, 160}, {5, 250}}},
     {"ML", {{0, 4}, {1, 20}, {2, 60}, {3, 180}, {4, 320}, {5, 450}}},
     {"ECH", {{0, 6}, {1, 30}, {2, 90}, {3, 270}, {4, 400}, {5, 550}}},

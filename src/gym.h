@@ -8,3 +8,5 @@ class Gym: public Property {
     int getVisitFee() const override;
     SquareInfo getInfo() const override;
 };
+
+

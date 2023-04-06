@@ -12,24 +12,33 @@ int Residence::getVisitFee() const {
     return tuition;
 }
 
-SquareInfo Residence::getInfo() const{
+
+SquareInfo Residence::getInfo() const {
     bool isOwned;
     bool isProperty = true;
-    bool isAcedemic = false;
     if (owner) {
         isOwned = true;
     } else {
         isOwned = false;
     }
-    unsigned int numImprove = 0;
-    unsigned int purchaseCost = purchaseCostMap.at(name);
+    size_t numImprove = 0;  // set to default 0
+    size_t purchaseCost = purchaseCostMap.at(name);
+    size_t improveCost = 0;
+    size_t mortgageLoan = purchaseCost / 2;
+    size_t unmortgageCost = purchaseCost * 6 / 10;
+    size_t improveRefund = 0;
     return SquareInfo{
         name,
         isProperty,
-        isAcedemic,
+        PropertyType::Residence,
         isOwned,
+        isMortgaged,
         purchaseCost,
         owner,
-        numImprove
+        numImprove,
+        improveCost,
+        mortgageLoan,
+        unmortgageCost,
+        improveRefund
     };
 }
