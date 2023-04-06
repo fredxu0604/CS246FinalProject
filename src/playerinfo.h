@@ -7,7 +7,7 @@ class Square;
 class Property;
 
 struct PlayerInfo {
-  std::string name;
+  const std::string &name;
   char avatar;
   size_t balance;
   std::vector<Property *> ownedProperties;
