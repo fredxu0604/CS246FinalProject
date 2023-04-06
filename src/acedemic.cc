@@ -11,7 +11,7 @@ Acedemic::Acedemic(string name): Property{name} {
 
 void Acedemic::improve(){
     if (numImprove == 5) {
-        throw CannotImprove{"Reaches Improvement Maximum"};
+        throw Disallowed{"Reaches Improvement Maximum"};
     } else {
         numImprove++;
     }
@@ -19,7 +19,7 @@ void Acedemic::improve(){
 }
 void Acedemic::unimprove(){
     if (numImprove == 0) {
-        throw CannotImprove{"No Improvement to be unimproved"};
+        throw Disallowed{"No Improvement to be unimproved"};
     } else {
         numImprove--;
     }
