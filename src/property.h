@@ -133,6 +133,8 @@ class Property: public Square {
     int numImprove;
     public:
     Property(string name);
+    void setMortgaged();
+    void setUnmortgaged();
     virtual int getVisitFee() const;
     virtual SquareInfo getInfo() const;
     void setOwner(Player* player);

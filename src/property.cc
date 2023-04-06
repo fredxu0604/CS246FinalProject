@@ -17,3 +17,17 @@ void Property::setOwner(Player* player) {
 }
 
 
+void Property::setMortgaged() {
+    if (this->getInfo().type == PropertyType::Acedemic) {
+        if (this->getInfo().numImprove > 0) {
+            throw Disallowed("You must sell all your improvements first");
+        }
+    } else {
+        isMortgaged = true;
+    }
+}
+
+void Property::setUnmortgaged() {
+    isMortgaged = false;
+}
+
