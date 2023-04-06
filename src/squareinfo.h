@@ -1,6 +1,8 @@
 #ifndef __SQUAREINFO_H__
 #define __SQUAREINFO_H__
 #include <string>
+
+enum class PropertyType;
 class Player;
 struct SquareInfo {
     string name;
