@@ -113,6 +113,7 @@ class Property: public Square {
     protected:
     Group group;
     Player* owner;
+    bool isMortgaged;
     int numImprove;
     public:
     Property(string name);
