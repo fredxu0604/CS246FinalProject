@@ -5,10 +5,11 @@
 struct SquareInfo {
     string name;
     bool isProperty;
+    bool isAcedemic;
     bool isOwned;
     size_t cost;
     Player* owner;
-    int numImprove;
+    unsigned int numImprove;
 };
 
 #endif

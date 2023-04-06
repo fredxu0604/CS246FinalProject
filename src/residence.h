@@ -6,4 +6,5 @@ class Residence: public Property {
     public:
     Residence(string name);
     int getVisitFee() const override;
+    SquareInfo getInfo() const override;
 };

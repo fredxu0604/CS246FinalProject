@@ -1,5 +1,6 @@
 #include "property.h"
 #include "acedemic.h"
+#include "gameexception.h"
 #include <map>
 #include <string>
 
@@ -27,4 +28,26 @@ void Acedemic::unimprove(){
 int Acedemic::getVisitFee() const {
     int tuition = tuitionCostMap.at(name).at(numImprove);
     return tuition;
+}
+
+SquareInfo Acedemic::getInfo() const {
+    bool isOwned;
+    bool isProperty = true;
+    bool isAcedemic = true;
+    if (owner) {
+        isOwned = true;
+    } else {
+        isOwned = false;
+    }
+
+    unsigned int purchaseCost = purchaseCostMap.at(name);
+    return SquareInfo{
+        name,
+        isProperty,
+        isAcedemic,
+        isOwned,
+        purchaseCost,
+        owner,
+        numImprove
+    };
 }

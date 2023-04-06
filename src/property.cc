@@ -15,23 +15,4 @@ void Property::setOwner(Player* player) {
     owner = player;
 }
 
-SquareInfo Property::getInfo() const {
-    bool isOwned;
-    bool isProperty = true;
-    if (owner) {
-        isOwned = true;
-    }
-    isOwned = false;
-    
-    unsigned int cost = purchaseCostMap.at(name);
-    return SquareInfo{
-        name,
-        isProperty,
-        isOwned,
-        cost,
-        owner,
-        numImprove
-    };
-}
-
 
