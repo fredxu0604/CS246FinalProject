@@ -24,7 +24,7 @@ Player::Player(const string &name, char avatar, Square *currSquare,
 }
 
 void Player::declareBankruptcy() { // assume that player can go bankrupt
-  currState = State::Bankrupt;
+  setState(State::Bankrupt);
   notifyObservers();
 }
 
@@ -105,7 +105,7 @@ void Player::buyImprovement(const string &propertyName) {
     throw;
   }
 
-  currState = State::Improve;
+  setState(State::Improve);
   notifyObservers();
 }
 
@@ -129,7 +129,7 @@ void Player::sellImprovement(const string &propertyName) {
     throw;
   }
 
-  currState = State::Improve;
+  setState(State::Improve);
   notifyObservers();
 }
 
@@ -151,7 +151,7 @@ void Player::mortgage(const string &propertyName) {
     throw;
   }
 
-  currState = State::Mortgage;
+  setState(State::Mortgage);
   notifyObservers();
 }
 
@@ -176,7 +176,7 @@ void Player::unmortgage(const string &propertyName) {
     throw;
   }
 
-  currState = State::Unmortgage;
+  setState(State::Unmortgage);
   notifyObservers();
 }
 
@@ -191,9 +191,10 @@ bool Player::makePayment(size_t amount, bool notify) {
 }
 
 void Player::moveTo(Square *newLocation) {
+  currSquare->removeVisitor(this);
   currSquare = newLocation;
-  currState = State::Move;
-  notifyObservers();
+  setState(State::Move);
+  newLocation->addVisitor(this);
 }
 
 void Player::addFunds(size_t amount) { balance += amount; }
@@ -228,7 +229,7 @@ void Player::buyProperty(Property *property) {
   makePayment(propertyInfo.cost);
   addProperty(property);
 
-  currState = State::BuyProperty;
+  setState(State::BuyProperty);
   notifyObservers();
 }
 
