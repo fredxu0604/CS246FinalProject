@@ -14,8 +14,14 @@ bool Player::owns(const string &propertyName) {
 
 Player::Player(const string &name, char avatar, Square *currSquare,
                vector<Property *> ownedProperties, size_t balance)
-    : Subject{}, name{name}, avatar{avatar}, balance{balance},
-      currSquare{currSquare}, ownedProperties{ownedProperties} {}
+    : Subject{}, name{name}, avatar{avatar}, balance{balance}, assets{0},
+      currSquare{currSquare}, ownedProperties{ownedProperties} {
+
+  for (auto property : ownedProperties) {
+    SquareInfo pInfo = property->getInfo();
+    assets += pInfo.cost + (pInfo.improvementCost * pInfo.numImprove);
+  }
+}
 
 void Player::declareBankruptcy() { // assume that player can go bankrupt
   currState = State::Bankrupt;
@@ -94,6 +100,7 @@ void Player::buyImprovement(const string &propertyName) {
   try {
     targetProperty->improve();
     makePayment(targetPropertyInfo.improvementCost);
+    assets += targetPropertyInfo.improvementCost;
   } catch (Disallowed &e) {
     throw;
   }
@@ -116,6 +123,7 @@ void Player::sellImprovement(const string &propertyName) {
   try {
     targetProperty->unimprove();
     balance += targetPropertyInfo.improvementRefund;
+    assets -= targetPropertyInfo.improvementCost;
 
   } catch (Disallowed &e) {
     throw;
@@ -193,6 +201,8 @@ void Player::addFunds(size_t amount) { balance += amount; }
 void Player::addProperty(Property *property) {
   ownedProperties.emplace_back(property);
   property->setOwner(this);
+  SquareInfo pInfo = property->getInfo();
+  assets += pInfo.cost + (pInfo.improvementCost * pInfo.numImprove);
 }
 
 void Player::removeProperty(Property *property) {
@@ -202,6 +212,8 @@ void Player::removeProperty(Property *property) {
     if (*it == property) {
       ownedProperties.erase(it);
       property->setOwner(nullptr);
+      SquareInfo pInfo = property->getInfo();
+      assets -= pInfo.cost + (pInfo.improvementCost * pInfo.numImprove);
       break;
     }
   }
@@ -221,5 +233,6 @@ void Player::buyProperty(Property *property) {
 }
 
 PlayerInfo Player::getInfo() const {
-  return PlayerInfo{name, avatar, balance, ownedProperties, currSquare};
+  return PlayerInfo{
+      name, avatar, balance, balance + assets, ownedProperties, currSquare};
 }

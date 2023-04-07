@@ -10,7 +10,8 @@ struct PlayerInfo {
   const std::string &name;
   char avatar;
   size_t balance;
-  std::vector<Property *> ownedProperties;
+  size_t netWorth;
+  const std::vector<Property *> &ownedProperties;
   Square *currSquare;
 };
 
