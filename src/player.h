@@ -16,6 +16,8 @@ class Player {
   Square *currSquare;
   std::vector<Property *> ownedProperties;
   bool isBankrupt;
+  bool isStuck;
+  int timsCups;
 
   
   bool hasMonopoly(const std::string &propertyName);
@@ -24,11 +26,13 @@ class Player {
 
 public:
   Player(const std::string &name, char avatar, Square *currSquare,
-         std::vector<Property *> ownedProperties, size_t balance = 0, bool isBankrupt = false);
+         std::vector<Property *> ownedProperties, size_t balance = 0, bool 
+         isBankrupt = false, bool stuck = false, int timsCups = 0);
 
   PlayerInfo getInfo() const;
 
-  bool owns(const std::string &propertyName);
+  bool owns(const std::string &propertyName) const;
+  bool owns(Property *p) const;
 
   void declareBankruptcy(); // player declares bankruptcy
 
@@ -54,6 +58,20 @@ public:
   void removeProperty(Property *property);
 
   void buyProperty(Property *property);
+
+  void lockPosition();
+
+  void unlockPosition();
+
+  void trade(Player *o, Property *give, Property *receive);
+
+  void trade(Player *o, size_t give, Property *receive);
+
+  void trade(Player *o, Property *give, size_t receive);
+
+  void addTimsCup();
+
+  void useTimsCup();
 };
 
 #endif
