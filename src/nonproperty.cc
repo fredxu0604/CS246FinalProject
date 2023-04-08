@@ -1,4 +1,5 @@
 #include "nonproperty.h"
+#include "property.h"
 #include "gameexception.h"
 #include "iostream"
 #include "player.h"
@@ -20,9 +21,66 @@ int findIndexByName(std::vector<Square *> &squares, std::string name) {
     return index;
 }
 
+NonProperty::NonProperty(string name): Square{name} {}
+
+SquareInfo NonProperty::getInfo() const {
+    return SquareInfo{
+        name,
+        false,
+        PropertyType::Gym, // doesn't matter
+        false,
+        false,
+        0,
+        nullptr,
+        0,
+        0,
+        0,
+        0,
+        0
+    };
+}
+
+CollectOSAP::CollectOSAP(string name): NonProperty{name} {}
+
+CollectOSAP::~CollectOSAP() {}
+
+void CollectOSAP::triggerEvent(Player *p) {
+    p->addFunds(OSAPFee);
+}
+
+DCTimsLine::DCTimsLine(string name): NonProperty{name} {}
+
+DCTimsLine::~DCTimsLine() {}
+
+void DCTimsLine::triggerEvent(Player *p) {
+    // need to implement stuck
+}
+
+GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares}{}
+
+GoToTims::~GoToTims() {
+    for (auto s:squares) {
+        delete s;
+    }
+    squares.clear();
+}
+
+void GoToTims::triggerEvent(Player *p) {
+    int timsIndex = findIndexByName(squares, "DCTimsLine");
+    p->moveTo(squares[timsIndex]);
+}
+
+GooseNesting::GooseNesting(string name): NonProperty{name} {}
+
+GooseNesting::~GooseNesting() {}
+
 void GooseNesting::triggerEvent(Player *p) {
     cout<< "You are attacked by geese!"<<endl;
 }
+
+Tuition::Tuition(string name): NonProperty{name} {}
+
+Tuition::~Tuition() {}
 
 void Tuition::triggerEvent(Player *p) {
     size_t input = 0;
@@ -47,6 +105,10 @@ void Tuition::triggerEvent(Player *p) {
     }
 }
 
+CoopFee::CoopFee(string name): NonProperty{name} {}
+
+CoopFee::~CoopFee() {}
+
 void CoopFee::triggerEvent(Player *p) {
     if (p->makePayment(coopFee)) {
         std::cout<<"You have paid " << coopFee << " as Coop Fee. Cali or Busted!"<< std::endl;
@@ -55,17 +117,17 @@ void CoopFee::triggerEvent(Player *p) {
     }
 }
 
-GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares}{}
-
-
-void GoToTims::triggerEvent(Player *p) {
-    int timsIndex = findIndexByName(squares, "DCTimsLine");
-    p->moveTo(squares[timsIndex]);
-}
 
 SLC::SLC(string name, std::vector<Square *> &squares, TimsCup * timsCups): NonProperty{name}, squares{squares},
 timsCups{timsCups} {}
 
+SLC::~SLC() {
+    delete timsCups;
+    for (auto s: squares) {
+        delete s;
+    }
+    squares.clear();
+}
 
 void SLC::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {
@@ -118,7 +180,12 @@ void SLC::triggerEvent(Player *p) {
     return;
 }
 
+
 NeedlesHall::NeedlesHall(string name, TimsCup* timsCup): NonProperty{name}, timsCups{timsCups} {}
+
+NeedlesHall::~NeedlesHall() {
+    delete timsCups;
+}
 
 void NeedlesHall::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {

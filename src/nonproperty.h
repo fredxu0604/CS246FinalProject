@@ -9,12 +9,14 @@
 
 const size_t tuitionPayment = 300;
 const size_t coopFee = 150;
+const size_t OSAPFee = 200;
 
 class NonProperty: public Square {
     public:
         NonProperty(string name);
         virtual ~NonProperty() = 0;
         virtual void triggerEvent(Player *p);
+        SquareInfo getInfo() const override;
 };
 
 
@@ -23,7 +25,6 @@ class CollectOSAP: public NonProperty {
         CollectOSAP(string name);
         ~CollectOSAP() override;
         void triggerEvent(Player *p) override;
-        SquareInfo getinfo();
 };
 
 class DCTimsLine: public NonProperty {
@@ -31,7 +32,6 @@ class DCTimsLine: public NonProperty {
         DCTimsLine(string name);
         ~DCTimsLine() override;
         void triggerEvent(Player *p) override;
-        SquareInfo getinfo();
 };
 
 class GoToTims: public NonProperty {
@@ -40,7 +40,6 @@ class GoToTims: public NonProperty {
         GoToTims(string name, std::vector<Square *> &squares);
         ~GoToTims() override;
         void triggerEvent(Player *p) override;
-        SquareInfo getinfo();
 };
 
 class GooseNesting: public NonProperty {
@@ -48,7 +47,6 @@ class GooseNesting: public NonProperty {
         GooseNesting(string name);
         ~GooseNesting() override;
         void triggerEvent(Player *p) override;
-        SquareInfo getinfo();
 };
 
 class Tuition: public NonProperty {
@@ -56,11 +54,12 @@ class Tuition: public NonProperty {
         Tuition(string name);
         ~Tuition() override;
         void triggerEvent(Player *p) override;
-        SquareInfo getinfo();
 };
 
 class CoopFee: public NonProperty {
     public:
+        CoopFee(string name);
+        ~CoopFee() override;
         void triggerEvent(Player *p) override;
 };
 
