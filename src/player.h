@@ -13,7 +13,6 @@ class Player : public Subject<PlayerInfo, State> {
   char avatar;
   size_t balance;
   size_t assets;
-  State currState;
   Square *currSquare;
   std::vector<Property *> ownedProperties;
 
