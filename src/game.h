@@ -31,6 +31,8 @@ class Game {
     void auctionBid();
     void auctionWithdraw();
 
+    void useCup();
+
     public:
     Game(bool testing = false);
     void loadFromFile(std::string fileName);
