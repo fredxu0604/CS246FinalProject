@@ -9,8 +9,6 @@
 class Game;
 
 class TextDisplay {
-    
-    std::vector<std::vector<char>> board;// 2D vector to store the Board.txt file
 
 public:
     TextDisplay();
