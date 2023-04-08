@@ -2,6 +2,8 @@
 #include "gameexception.h"
 #include "property.h"
 #include "squareinfo.h"
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 bool Player::owns(const string &propertyName) const {
@@ -228,7 +230,7 @@ void Player::buyProperty(Property *property) {
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar, balance, balance + assets, ownedProperties, currSquare, isBankrupt, isStuck};
+      name, avatar, timsCups, balance, balance + assets, ownedProperties, currSquare, isBankrupt, isStuck};
 }
 
 void Player::lockPosition() {
@@ -298,4 +300,15 @@ int Player::findIndex(std::vector<Square *> &squares) {
     }
   }
   return index;
+}
+
+void Player::winTimsCup() {
+  // Seed the random number generator with the current time
+  srand(time(0));
+
+  // Generate a random number between 1 and 100
+  int rand_num = rand() % 100 + 1;
+  if (rand_num == 1) {
+    this->addTimsCup();
+  }
 }
