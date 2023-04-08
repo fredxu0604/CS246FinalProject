@@ -8,13 +8,14 @@
 class Square;
 class Property;
 
-class Player : public Subject<PlayerInfo, State> {
+class Player {
   std::string name;
   char avatar;
   size_t balance;
   size_t assets;
   Square *currSquare;
   std::vector<Property *> ownedProperties;
+  bool isBankrupt;
 
   
   bool hasMonopoly(const std::string &propertyName);
@@ -23,9 +24,9 @@ class Player : public Subject<PlayerInfo, State> {
 
 public:
   Player(const std::string &name, char avatar, Square *currSquare,
-         std::vector<Property *> ownedProperties, size_t balance = 0);
+         std::vector<Property *> ownedProperties, size_t balance = 0, bool isBankrupt = false);
 
-  PlayerInfo getInfo() const override;
+  PlayerInfo getInfo() const;
 
   bool owns(const std::string &propertyName);
 
@@ -39,8 +40,7 @@ public:
 
   void unmortgage(const std::string &propertyName); // similar to above
 
-  bool makePayment(size_t amount,
-                   bool notify = false); // Returns true if the player has
+  bool makePayment(size_t amount); // Returns true if the player has
                                          // enough money to make the payment
                                          //   The player can declare bankruptcy
                                          //   if this returns false

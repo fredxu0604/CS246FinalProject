@@ -13,9 +13,9 @@ bool Player::owns(const string &propertyName) {
 }
 
 Player::Player(const string &name, char avatar, Square *currSquare,
-               vector<Property *> ownedProperties, size_t balance)
-    : Subject{}, name{name}, avatar{avatar}, balance{balance}, assets{0},
-      currSquare{currSquare}, ownedProperties{ownedProperties} {
+               vector<Property *> ownedProperties, size_t balance, bool isBankrupt)
+    : name{name}, avatar{avatar}, balance{balance}, assets{0},
+      currSquare{currSquare}, ownedProperties{ownedProperties}, isBankrupt{isBankrupt} {
 
   for (auto property : ownedProperties) {
     SquareInfo pInfo = property->getInfo();
@@ -24,8 +24,7 @@ Player::Player(const string &name, char avatar, Square *currSquare,
 }
 
 void Player::declareBankruptcy() { // assume that player can go bankrupt
-  setState(State::Bankrupt);
-  notifyObservers();
+  isBankrupt = true;
 }
 
 bool Player::hasMonopoly(const string &propertyName) {
@@ -104,9 +103,6 @@ void Player::buyImprovement(const string &propertyName) {
   } catch (Disallowed &e) {
     throw;
   }
-
-  setState(State::Improve);
-  notifyObservers();
 }
 
 void Player::sellImprovement(const string &propertyName) {
@@ -128,9 +124,6 @@ void Player::sellImprovement(const string &propertyName) {
   } catch (Disallowed &e) {
     throw;
   }
-
-  setState(State::Improve);
-  notifyObservers();
 }
 
 void Player::mortgage(const string &propertyName) {
@@ -150,9 +143,6 @@ void Player::mortgage(const string &propertyName) {
   } catch (Disallowed &e) {
     throw;
   }
-
-  setState(State::Mortgage);
-  notifyObservers();
 }
 
 void Player::unmortgage(const string &propertyName) {
@@ -175,25 +165,19 @@ void Player::unmortgage(const string &propertyName) {
   } catch (Disallowed &e) {
     throw;
   }
-
-  setState(State::Unmortgage);
-  notifyObservers();
 }
 
-bool Player::makePayment(size_t amount, bool notify) {
+bool Player::makePayment(size_t amount) {
   if (amount > balance)
     return false;
 
   balance -= amount;
-  if (notify)
-    notifyObservers();
   return true;
 }
 
 void Player::moveTo(Square *newLocation) {
   currSquare->removeVisitor(this);
   currSquare = newLocation;
-  setState(State::Move);
   newLocation->addVisitor(this);
 }
 
@@ -228,12 +212,9 @@ void Player::buyProperty(Property *property) {
 
   makePayment(propertyInfo.cost);
   addProperty(property);
-
-  setState(State::BuyProperty);
-  notifyObservers();
 }
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar, balance, balance + assets, ownedProperties, currSquare};
+      name, avatar, balance, balance + assets, ownedProperties, currSquare, isBankrupt};
 }

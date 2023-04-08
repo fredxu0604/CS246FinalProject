@@ -13,6 +13,7 @@ struct PlayerInfo {
   size_t netWorth;
   const std::vector<Property *> &ownedProperties;
   Square *currSquare;
+  bool isBankrupt;
 };
 
 #endif

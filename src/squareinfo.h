@@ -1,11 +1,12 @@
 #ifndef __SQUAREINFO_H__
 #define __SQUAREINFO_H__
 #include <string>
+#include <vector>
 
 enum class PropertyType;
 class Player;
 struct SquareInfo {
-    string name;
+    std::string name;
     bool isProperty;
     PropertyType type;
     bool isOwned;
@@ -17,6 +18,7 @@ struct SquareInfo {
     size_t mortgageLoan;
     size_t unmortgageCost;
     size_t improvementRefund;
+    const std::vector<Player *> &visitors;
 };
 
 #endif
