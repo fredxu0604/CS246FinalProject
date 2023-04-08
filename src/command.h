@@ -14,6 +14,7 @@ enum class CommandType {
     Assets,
     All,
     Save,
+    Roll,
     Pay,
     UseCup,
     TuitionChoice,
