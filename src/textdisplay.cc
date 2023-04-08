@@ -1,4 +1,5 @@
 // textdisplay.cc
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -8,10 +9,12 @@
 #include "command.h"
 #include "player.h"
 #include "square.h"
-#include "board.h"
 
-TextDisplay::TextDisplay(Board *game) : game{game} {
-    std::ifstream board_text("board.txt");
+void TextDisplay::print(std::ostream &out, const BoardInfo &board_info, std::string message) {
+    
+    // Load the game board from the board.txt file
+    std::vector<std::vector<char>> board;   // 2D vector to store the Board.txt display
+    std::ifstream board_text("board.txt"); 
     std::string line;
     while (std::getline(board_text, line)){
         std::vector<char> row;
@@ -21,10 +24,7 @@ TextDisplay::TextDisplay(Board *game) : game{game} {
         }
         board.push_back(row);
     }
-}
-
-
-void TextDisplay::print(std::ostream &out, const BoardInfo &board_info, std::string message) {
+    
     // Print the game board
     for (const auto &row : board) {
         for (char cell : row) {
@@ -48,6 +48,7 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info, std::str
         out << message << std::endl;
     }
 }
+
 
 void TextDisplay::print(std::ostream &out, std::string message) {
     if (!message.empty()) {
