@@ -34,8 +34,9 @@ class DCTimsLine: public NonProperty {
 };
 
 class GoToTims: public NonProperty {
+    std::vector<Square *> &squares;
     public:
-        GoToTims(string name);
+        GoToTims(string name, std::vector<Square *> &squares);
         ~GoToTims() override;
         void triggerEvent(Player *p) override;
         SquareInfo getinfo();
@@ -62,9 +63,12 @@ class CoopFee: public NonProperty {
         void triggerEvent(Player *p) override;
 };
 
+
+
 class SLC: public NonProperty {
+    std::vector<Square *> &squares;
     public:
-        SLC(string name);
+        SLC(string name, std::vector<Square *> &squares);
         ~SLC() override;
         void triggerEvent(Player *p) override;
 };

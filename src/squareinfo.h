@@ -18,7 +18,6 @@ struct SquareInfo {
     size_t mortgageLoan;
     size_t unmortgageCost;
     size_t improvementRefund;
-    const std::vector<Player *> &visitors;
 };
 
 #endif
