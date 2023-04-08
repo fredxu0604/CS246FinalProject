@@ -72,6 +72,8 @@ public:
   void addTimsCup();
 
   void useTimsCup();
+
+  int findIndex(std::vector<Square *> &squares); // find the index of current square in vector of squares
 };
 
 #endif

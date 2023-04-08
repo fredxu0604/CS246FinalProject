@@ -288,3 +288,14 @@ void Player::useTimsCup() {
   unlockPosition();
   --timsCups;
 }
+
+int Player::findIndex(std::vector<Square *> &squares) {
+  int index = -1;
+  for (int i = 0; i < squares.size(); i++) {
+    if (squares[i] == currSquare) {
+        index = i;
+        break;
+    }
+  }
+  return index;
+}
