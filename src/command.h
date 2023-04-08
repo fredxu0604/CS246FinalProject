@@ -15,6 +15,7 @@ enum class CommandType {
     All,
     Save,
     Roll,
+    Next,
     Pay,
     UseCup,
     TuitionChoice,
