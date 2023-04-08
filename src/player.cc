@@ -230,7 +230,7 @@ void Player::buyProperty(Property *property) {
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar, timsCups, balance, balance + assets, ownedProperties, currSquare, isBankrupt, isStuck};
+      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, isStuck};
 }
 
 void Player::lockPosition() {
