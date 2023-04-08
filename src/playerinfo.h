@@ -9,7 +9,6 @@ class Property;
 struct PlayerInfo {
   const std::string &name;
   char avatar;
-  int timsCups;
   size_t balance;
   size_t netWorth;
   const std::vector<Property *> &ownedProperties;

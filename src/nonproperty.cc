@@ -55,7 +55,7 @@ void CoopFee::triggerEvent(Player *p) {
     }
 }
 
-GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares} {}
+GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares}{}
 
 
 void GoToTims::triggerEvent(Player *p) {
@@ -63,11 +63,12 @@ void GoToTims::triggerEvent(Player *p) {
     p->moveTo(squares[timsIndex]);
 }
 
-SLC::SLC(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares} {}
+SLC::SLC(string name, std::vector<Square *> &squares, TimsCup * timsCups): NonProperty{name}, squares{squares},
+timsCups{timsCups} {}
 
 
 void SLC::triggerEvent(Player *p) {
-    if (p->getInfo().timsCups < 4) {
+    if (timsCups->getAvailable() > 0) {
         p->winTimsCup();
     }
     // find the player's location in the board
@@ -110,9 +111,10 @@ void SLC::triggerEvent(Player *p) {
     return;
 }
 
+NeedlesHall::NeedlesHall(string name, TimsCup* timsCup): NonProperty{name}, timsCups{timsCups} {}
 
 void NeedlesHall::triggerEvent(Player *p) {
-    if (p->getInfo().timsCups < 4) {
+    if (timsCups->getAvailable() > 0) {
         p->winTimsCup();
     }
     size_t payment = 0;

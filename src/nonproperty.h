@@ -4,6 +4,7 @@
 
 #include "square.h"
 #include "squareinfo.h"
+#include "timscup.h"
 #include <string>
 
 const size_t tuitionPayment = 300;
@@ -67,15 +68,17 @@ class CoopFee: public NonProperty {
 
 class SLC: public NonProperty {
     std::vector<Square *> &squares;
+    TimsCup* timsCups;
     public:
-        SLC(string name, std::vector<Square *> &squares);
+        SLC(string name, std::vector<Square *> &squares, TimsCup * timsCups);
         ~SLC() override;
         void triggerEvent(Player *p) override;
 };
 
 class NeedlesHall: public NonProperty {
+    TimsCup* timsCups;
     public:
-        NeedlesHall(string name);
+        NeedlesHall(string name,TimsCup* timsCups);
         ~NeedlesHall() override;
         void triggerEvent(Player *p) override;
 };
