@@ -1,3 +1,5 @@
+#ifndef __GYM_H__
+#define __GYM_H__
 #include "squareinfo.h"
 #include "property.h"
 #include <string>
@@ -11,4 +13,4 @@ class Gym: public Property {
     SquareInfo getInfo() const override;
 };
 
-
+#endif
