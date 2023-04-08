@@ -69,7 +69,14 @@ timsCups{timsCups} {}
 
 void SLC::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {
-        p->winTimsCup();
+        // Seed the random number generator with the current time
+        srand(time(0));
+        // Generate a random number between 1 and 100
+        int rand_num = rand() % 100 + 1;
+        if (rand_num == 1) {
+            p->addTimsCup();
+            timsCups->allocateOne();
+        }
     }
     // find the player's location in the board
     int index = p->findIndex(squares);
@@ -115,7 +122,14 @@ NeedlesHall::NeedlesHall(string name, TimsCup* timsCup): NonProperty{name}, tims
 
 void NeedlesHall::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {
-        p->winTimsCup();
+        // Seed the random number generator with the current time
+        srand(time(0));
+        // Generate a random number between 1 and 100
+        int rand_num = rand() % 100 + 1;
+        if (rand_num == 1) {
+            p->addTimsCup();
+            timsCups->allocateOne();
+        }
     }
     size_t payment = 0;
     size_t gain = 0;

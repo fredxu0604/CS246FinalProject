@@ -301,14 +301,3 @@ int Player::findIndex(std::vector<Square *> &squares) {
   }
   return index;
 }
-
-void Player::winTimsCup() {
-  // Seed the random number generator with the current time
-  srand(time(0));
-
-  // Generate a random number between 1 and 100
-  int rand_num = rand() % 100 + 1;
-  if (rand_num == 1) {
-    this->addTimsCup();
-  }
-}

@@ -75,7 +75,6 @@ public:
 
   int findIndex(std::vector<Square *> &squares); // find the index of current square in vector of squares
 
-  void winTimsCup(); // 1/100 chance to win a TimsCup
 };
 
 #endif
