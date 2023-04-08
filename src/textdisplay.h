@@ -6,18 +6,14 @@
 #include "command.h"
 
 
-
 class Game;
-class Board;
 
 class TextDisplay {
-    
-    Board *game;
     
     std::vector<std::vector<char>> board;// 2D vector to store the Board.txt file
 
 public:
-    TextDisplay(Board *game);
+    TextDisplay();
     
     void print(std::ostream &out, const BoardInfo &board, std::string message = ""); // print the board and message (if exists) in this version
     
