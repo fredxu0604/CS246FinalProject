@@ -10,7 +10,7 @@ class Player;
 
 // helper
 // find the index of square on the board
-int findIndexByString(std::vector<Square *> &squares, std::string name) {
+int findIndexByName(std::vector<Square *> &squares, std::string name) {
     int index = -1;
     for (int i = 0; i < squares.size(); i++) {
         if (squares[i]->getInfo().name == name) {
@@ -59,7 +59,7 @@ GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{nam
 
 
 void GoToTims::triggerEvent(Player *p) {
-    int timsIndex = findIndexByString(squares, "DCTimsLine");
+    int timsIndex = findIndexByName(squares, "DCTimsLine");
     p->moveTo(squares[timsIndex]);
 }
 
@@ -74,8 +74,8 @@ void SLC::triggerEvent(Player *p) {
     int index = p->findIndex(squares);
     int move;
     // find GotoTims and collectOSAP index
-    int timsIndex = findIndexByString(squares, "GoToTims");
-    int OSAPIndex = findIndexByString(squares, "collectOSAP");
+    int timsIndex = findIndexByName(squares, "GoToTims");
+    int OSAPIndex = findIndexByName(squares, "collectOSAP");
 
     // Seed the random number generator with the current time
     srand(time(0));
