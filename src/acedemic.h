@@ -1,3 +1,5 @@
+#ifndef __ACEDEMIC_H__
+#define __ACEDEMIC_H__
 #include "property.h"
 #include "squareinfo.h"
 #include <string>
@@ -12,3 +14,4 @@ class Acedemic: public Property {
     size_t getVisitFee() const override;
     SquareInfo getInfo() const override;
 };
+#endif
