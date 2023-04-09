@@ -189,9 +189,7 @@ bool Player::makePayment(size_t amount) {
 void Player::moveTo(Square *newLocation) {
   if (turnsStuck > 0)
     throw Disallowed{"Cannot move a stuck player!"};
-  currSquare->removeVisitor(this);
   currSquare = newLocation;
-  newLocation->addVisitor(this);
 }
 
 void Player::addFunds(size_t amount) { balance += amount; }

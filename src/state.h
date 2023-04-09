@@ -3,7 +3,9 @@
 
 enum class GameState {
   PreRoll,
+  JustRolled,
   SquareArrival,
+  IdleTurn,
   Auction,
   Trade,
   MoneyCritical,

@@ -1,5 +1,7 @@
 #include "timscup.h"
 
+TimsCup::TimsCup(int available, int inUse) : available{available}, inUse{inUse} {}
+
 int TimsCup::getAvailable() {
     return available;
 }

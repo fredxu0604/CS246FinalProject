@@ -8,6 +8,7 @@
 
 class Property;
 class NonProperty;
+class TimsCup;
 
 class Game {
     int numPlayers;
@@ -21,6 +22,8 @@ class Game {
     Board *gameBoard;
     Player *currPlayer;
     GameState gameState;
+    TimsCup *tc;
+
 
     std::vector<Square *> squares;
     std::vector<Property *> properties;
@@ -41,8 +44,9 @@ class Game {
     Player *findPlayerByName(std::string name); // implemented
 
     Property *findPropertyByName(std::string propertyName); // implemented
+    NonProperty *findNonPropertyByName(std::string nonPropertyName); // implemented
 
-    void handleArrival();
+    bool handleArrival();
 
     void trade(std::string name, std::string give, std::string receive);
     void trade(std::string name, size_t give, std::string receive);
@@ -63,7 +67,7 @@ class Game {
     Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented
 
     void loadFromFile(std::string fileName); // implemented
-    void saveToFile(std::string fileName);
+    void saveToFile(std::string fileName); // implemented
 
     
     void newGame();
