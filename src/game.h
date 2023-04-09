@@ -64,11 +64,13 @@ class Game {
     void displayAssets();
 
     void auction();
-    void auctionBid();
+    void auctionBid(size_t amount);
     void auctionWithdraw();
 
     void useCup();
 
+    void cannotUseThisCommand();
+    void warnMoneyCritical();
     void stopGame();
 
     public:
