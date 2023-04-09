@@ -2,7 +2,6 @@
 #define __PLAYER_H__
 #include "playerinfo.h"
 #include "state.h"
-#include "subject.h"
 #include <vector>
 
 class Square;
