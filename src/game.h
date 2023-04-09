@@ -18,6 +18,8 @@ class Game {
     void roll();
     void next();
 
+    void handleArrival();
+
     void trade(std::string name, std::string give, std::string receive);
     void trade(std::string name, size_t give, std::string receive);
     void trade(std::string name, std::string give, size_t receive);
@@ -38,6 +40,7 @@ class Game {
     void loadFromFile(std::string fileName);
     void newGame();
     bool execute(Command cmd);
+    void runGameLoop();
 
 };
 
