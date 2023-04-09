@@ -46,24 +46,28 @@ class Game {
     Property *findPropertyByName(std::string propertyName); // implemented
     NonProperty *findNonPropertyByName(std::string nonPropertyName); // implemented
 
-    bool handleArrival();
+    void handleArrival(); // implemented
 
-    std::string toString(size_t n);
 
-    void trade(std::string name, std::string give, std::string receive);
-    void trade(std::string name, size_t give, std::string receive);
-    void trade(std::string name, std::string give, size_t receive);
+    void trade(std::string name, std::string give, std::string receive); // implemented
+    void trade(std::string name, size_t give, std::string receive); // implemented
+    void trade(std::string name, std::string give, size_t receive); // implemented
 
     void improve(std::string property, std::string mode);
     void mortgage(std::string property);
     void unmortgage(std::string property);
     void bankrupt();
 
+    void displayAll();
+    void displayAssets();
+
     void auction();
     void auctionBid();
     void auctionWithdraw();
 
     void useCup();
+
+    void stopGame();
 
     public:
     Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented

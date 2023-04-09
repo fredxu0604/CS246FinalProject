@@ -1,6 +1,7 @@
 #include "game.h"
 #include "acedemic.h"
 #include "board.h"
+#include "command.h"
 #include "gameexception.h"
 #include "gym.h"
 #include "nonproperty.h"
@@ -211,7 +212,7 @@ NonProperty *Game::findNonPropertyByName(string nonPropertyName) {
   return nullptr;
 }
 
-bool Game::handleArrival() {
+void Game::handleArrival() {
   gameState = GameState::SquareArrival;
   PlayerInfo currPlayerInfo = currPlayer->getInfo();
   SquareInfo currSquareInfo = currPlayerInfo.currSquare->getInfo();
@@ -226,11 +227,11 @@ bool Game::handleArrival() {
 
       if (currPlayer->getInfo().currSquare != currSquare) {
         gameState = GameState::JustRolled;
-        return true;
+        return;
       }
 
       gameState = GameState::IdleTurn;
-      return false;
+      return;
     }
 
     Property *pp = findPropertyByName(currSquareInfo.name);
@@ -244,7 +245,7 @@ bool Game::handleArrival() {
         size_t visitFee = pp->getVisitFee();
 
         gameBoard->update("This property is owned by " +
-                          pOwner->getInfo().name + "\nYou must pay " +
+                          pOwner->getInfo().name + "\nYou must pay $" +
                           to_string(visitFee) + "!");
         
 
@@ -252,10 +253,21 @@ bool Game::handleArrival() {
           throw InsufficientFunds{"Cannnot make rent!"};
 
         pOwner->addFunds(visitFee);
+        gameState = GameState::IdleTurn;
+        return;
+
+
+      } else {
+        gameState = GameState::ChoiceBuyProperty;
+        return;
       }
     }
 
+    throw Disallowed{"Somehow encountered a square that is neither property nor nonproperty!"};
+
   } catch (InsufficientFunds e) {
+    gameState = GameState::MoneyCritical;
+    return;
   }
 }
 
@@ -293,4 +305,73 @@ void Game::saveToFile(string fileName) {
     }
     file.close();
   }
+}
+
+void Game::runGameLoop() {
+  while (true) {
+    if (numPlayers < 2)
+      break;
+
+    switch (gameState) {
+      case GameState::PreRoll:
+        Command cmd = gameBoard->readCommand();
+        PlayerInfo pInfo = currPlayer->getInfo();
+        SquareInfo sInfo = pInfo.currSquare->getInfo();
+
+        switch (cmd.type) {
+          case CommandType::All:
+            displayAll();
+
+          case CommandType::Assets:
+            displayAssets();
+
+          case CommandType::AuctionBid:
+            gameBoard->update("Not currently in an auction.");
+
+          case CommandType::AuctionWithdraw:
+            gameBoard->update("Not currently in an auction.");
+
+          case CommandType::Bankrupt:
+            gameBoard->update("Cannot declare bankruptcy right now.");
+
+          case CommandType::Improve:
+            try {
+              improve(sInfo.name, cmd.args[0]);
+            } catch (Disallowed e) {
+              gameBoard->update(e.getMessage());
+            }
+
+          case CommandType::Mortgage:
+            try {
+              mortgage(sInfo.name);
+            } catch (Disallowed e) {
+              gameBoard->update(e.getMessage());
+            }
+
+          
+        }
+    }
+
+  }
+  stopGame();
+}
+
+
+
+// trade property with property
+void Game::trade(std::string name, std::string give, std::string receive) {
+  Player * otherPlayer = findPlayerByName(name);
+  currPlayer->trade(otherPlayer,findPropertyByName(give), findPropertyByName(receive));
+}
+
+// trade property with balance
+void Game::trade(std::string name, size_t give, std::string receive) {
+  Player * otherPlayer = findPlayerByName(name);
+  currPlayer->trade(otherPlayer, give, findPropertyByName(receive));
+}
+
+// trade balance with property
+void Game::trade(std::string name, std::string give, size_t receive) {
+  Player * otherPlayer = findPlayerByName(name);
+  currPlayer->trade(otherPlayer, findPropertyByName(give), receive);
 }
