@@ -62,6 +62,8 @@ public:
 
   void makeStuck();
 
+  void makeUnstuck();
+
   void passTurnStuck();
 
   int roll();
