@@ -53,7 +53,9 @@ class Game {
     void trade(std::string name, size_t give, std::string receive); // implemented
     void trade(std::string name, std::string give, size_t receive); // implemented
 
-    void improve(std::string property, std::string mode);
+    void tradeSwitch(std::string name, std::string give, std::string receive);
+
+    void improve(std::string property, std::string mode); // implemented
     void mortgage(std::string property);
     void unmortgage(std::string property);
     void bankrupt();
