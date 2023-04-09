@@ -65,10 +65,7 @@ void Game::loadFromFile(string fileName) {
                                     vector<Property *>{}, money, money == -1,
                                     turnsStuck, timsCups});
   }
-
-  for (auto p : players) {
-    p->getInfo().currSquare->addVisitor(p);
-  }
+  
 
   for (int i = 0; i < numProperties; ++i) {
     getline(inFile, line);
