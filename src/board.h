@@ -1,6 +1,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 #include "boardinfo.h"
+#include "command.h"
 #include "square.h"
 #include "squareinfo.h"
 #include "observer.h"
@@ -21,6 +22,7 @@ class Board {
     void update(std::string message = "", bool printBoard = true); // calls the print method of td, passes cout as ostream &out.
                                                                   // only call the version that prints the board if printBoard is true.
     void setCurrPlayer(Player *np);
+    Command readCommand();
 };
 
 
