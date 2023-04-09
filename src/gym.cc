@@ -1,6 +1,5 @@
 #include "gym.h"
 #include "player.h"
-#include "dice.h"
 #include <string>
 #include "gameexception.h"
 
@@ -13,6 +12,9 @@ void Gym::unimprove() {
     throw Disallowed{"Improvement on residence is not allowed"};
 }
 size_t Gym::getVisitFee() const {
+    if (isMortgaged) {
+        return 0;
+    }
     // check whether it's owned by someone
     if (! owner) {
         return 0;
@@ -24,11 +26,10 @@ size_t Gym::getVisitFee() const {
                 gymOwned++;
             }
         }
-        Dice d1, d2;
         if (gymOwned == 1) {
-            size_t fee = (d1.roll() + d2.roll()) * 4;
+            size_t fee = (size_t)(owner->roll() + owner->roll()) * 4;
         } else {
-            size_t fee = (d1.roll() + d2.roll()) * 10;
+            size_t fee = (size_t)(owner->roll() + owner->roll()) * 10;
         }
     }
 }

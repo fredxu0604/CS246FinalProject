@@ -4,7 +4,6 @@
 #include <string>
 #include "squareinfo.h"
 #include "player.h"
-#include "dice.h"
 #include "gameexception.h"
 
 Residence::Residence(string name): Property{name} {}
@@ -18,6 +17,9 @@ void Residence::unimprove() {
 }
 
 size_t Residence::getVisitFee() const {
+    if (isMortgaged) {
+        return 0;
+    }
     // check whether it's owned by someone
     if (! owner) {
         return 0;

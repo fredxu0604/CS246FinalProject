@@ -26,6 +26,9 @@ void Acedemic::unimprove(){
 }
 
 size_t Acedemic::getVisitFee() const {
+    if (isMortgaged) {
+        return 0;
+    }
     if (owner) {
         size_t tuition = tuitionCostMap.at(name).at(numImprove);
         return tuition;
