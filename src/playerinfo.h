@@ -15,6 +15,7 @@ struct PlayerInfo {
   Square *currSquare;
   bool isBankrupt;
   int turnsStuck;
+  int timsCups;
 };
 
 #endif

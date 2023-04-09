@@ -229,7 +229,7 @@ void Player::buyProperty(Property *property) {
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, turnsStuck};
+      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, turnsStuck, timsCups};
 }
 
 void Player::makeStuck() {
