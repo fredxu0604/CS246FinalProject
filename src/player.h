@@ -28,7 +28,7 @@ class Player {
 public:
   Player(const std::string &name, char avatar, Square *currSquare,
          std::vector<Property *> ownedProperties, size_t balance = 0, bool 
-         isBankrupt = false, bool stuck = false, int timsCups = 0);
+         isBankrupt = false, int turnsStuck = 0, int timsCups = 0);
 
   PlayerInfo getInfo() const;
 
