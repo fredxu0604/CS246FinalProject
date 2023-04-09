@@ -14,7 +14,7 @@ struct PlayerInfo {
   const std::vector<Property *> &ownedProperties;
   Square *currSquare;
   bool isBankrupt;
-  bool isStuck;
+  int turnsStuck;
 };
 
 #endif

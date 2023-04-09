@@ -16,11 +16,12 @@ class Player {
   Square *currSquare;
   std::vector<Property *> ownedProperties;
   bool isBankrupt;
-  bool isStuck;
+  int turnsStuck;
   int timsCups;
 
   
   bool hasMonopoly(const std::string &propertyName);
+  bool isStuck();
   Property *validateImprovement(const std::string &propertyName);
   Property *validateMortgage(const std::string &propertyName);
 
@@ -59,9 +60,11 @@ public:
 
   void buyProperty(Property *property);
 
-  void lockPosition();
+  void makeStuck();
 
-  void unlockPosition();
+  void passTurnStuck();
+
+  int roll();
 
   void trade(Player *o, Property *give, Property *receive);
 
