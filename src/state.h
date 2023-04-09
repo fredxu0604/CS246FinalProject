@@ -1,12 +1,13 @@
 #ifndef __STATE_H__
 #define __STATE_H__
 
-enum class GameState { // is this even needed?
-  Normal,
-  TuitionChoice,
-  TradeResponse,
-  NoMoney,
-  Auction
+enum class GameState {
+  PreRoll,
+  SquareArrival,
+  Auction,
+  Trade,
+  MoneyCritical,
+  
 };
 
 #endif

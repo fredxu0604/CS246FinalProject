@@ -53,6 +53,20 @@ const map<PropertyType, std::vector<std::string>> residenceGymMap = {
     {PropertyType::Residence, vector<std::string>{"MKV", "UWP", "V1", "REV"}},
 };
 
+// const map<std::vector<std::string>, PropertyType> residenceGymMapByNames{
+//     {vector<std::string>{"PAC", "CIF"}, PropertyType::Gym},
+//     {vector<std::string>{"MKV", "UWP", "V1", "REV"}, PropertyType::Residence}
+// };
+
+const map<std::string, PropertyType> residenceGymMapByNames{
+    {"PAC", PropertyType::Gym},
+    {"CIF", PropertyType::Gym},
+    {"MKV", PropertyType::Residence},
+    {"UWP", PropertyType::Residence},
+    {"V1", PropertyType::Residence},
+    {"REV", PropertyType::Residence}
+};
+
 
 const map<int, size_t> residenceRentMap = {
     {1, 25},
@@ -127,6 +141,37 @@ const map<string, map<size_t, size_t>> tuitionCostMap = {
     {"C2", {{0, 28}, {1, 150}, {2, 450}, {3, 1000}, {4, 1200}, {5, 1400}}},
     {"MC", {{0, 35}, {1, 175}, {2, 500}, {3, 1100}, {4, 1300}, {5, 1500}}},
     {"DC", {{0, 50}, {1, 200}, {2, 600}, {3, 1400}, {4, 1700}, {5, 2000}}}
+};
+
+const std::vector<std::string> allOwnableProperties{
+    "AL",
+    "ML",
+    "ECH",
+    "PAS",
+    "HH",
+    "RCH",
+    "DWE",
+    "CPH",
+    "LHI",
+    "BMH",
+    "OPT",
+    "EV1",
+    "EV2",
+    "EV3",
+    "PHYS",
+    "B1",
+    "B2",
+    "EIT",
+    "ESC",
+    "C2",
+    "MC",
+    "DC",
+    "MKV",
+    "UWP",
+    "V1",
+    "REV",
+    "PAC",
+    "CIF"
 };
 
 class Property: public Square {

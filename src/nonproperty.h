@@ -12,6 +12,17 @@ const size_t coopFee = 150;
 const size_t OSAPFee = 200;
 const size_t DCTimsLineFee = 50;
 
+const vector<std::string> allNonOwnableSquares{
+    "COLLECT OSAP",
+    "DC Tims Line",
+    "GO TO TIMS",
+    "GOOSE NESTING",
+    "TUITION",
+    "COOP FEE",
+    "SLC",
+    "NEEDLES HALL"
+};
+
 class NonProperty: public Square {
     public:
         NonProperty(string name);

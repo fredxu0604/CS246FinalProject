@@ -4,19 +4,43 @@
 #include "command.h"
 #include "state.h"
 #include <string>
+#include "property.h"
+
+class Property;
+class NonProperty;
 
 class Game {
+    int numPlayers;
+    int numSquares;
+    int numProperties;
     bool initialized;
     bool gameOn;
     bool testing;
+    int die1;
+    int die2;
     Board *gameBoard;
     Player *currPlayer;
-    // GameState gameState; idk if i actually need this
+    GameState gameState;
+
+    std::vector<Square *> squares;
+    std::vector<Property *> properties;
+    std::vector<NonProperty *> nonProperties;
+    std::vector<Player *> players;
 
     
-    void saveToFile(std::string fileName);
     void roll();
     void next();
+
+    void createSquares(); // implemented
+
+    bool isIn(const std::vector<string> &pNames, const std::string &targetName); // implemented
+    bool isIn(const map<std::string, PropertyType> &pNames, const std::string &targetName); // implemented
+
+    int getSquareIdx(std::string squareName); // implemented
+
+    Player *findPlayerByName(std::string name); // implemented
+
+    Property *findPropertyByName(std::string propertyName); // implemented
 
     void handleArrival();
 
@@ -36,8 +60,12 @@ class Game {
     void useCup();
 
     public:
-    Game(bool testing = false);
-    void loadFromFile(std::string fileName);
+    Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented
+
+    void loadFromFile(std::string fileName); // implemented
+    void saveToFile(std::string fileName);
+
+    
     void newGame();
     bool execute(Command cmd);
     void runGameLoop();

@@ -293,7 +293,7 @@ void Player::addTimsCup() {
 
 void Player::useTimsCup() {
   if (timsCups == 0)
-    throw Disallowed("You don't have any Tims Cups.");
+    throw Disallowed{"You don't have any Tims Cups."};
 
   if (turnsStuck == 0)
     throw Disallowed{"Nothing to use Tims Cup on."};
