@@ -3,7 +3,6 @@
 #include "property.h"
 #include "squareinfo.h"
 #include <cstdlib>
-#include <ctime>
 using namespace std;
 
 bool Player::owns(const string &propertyName) const {
@@ -24,10 +23,10 @@ bool Player::owns(Property *p) const {
 
 Player::Player(const string &name, char avatar, Square *currSquare,
                vector<Property *> ownedProperties, size_t balance, 
-               bool isBankrupt, bool stuck, int timsCups)
+               bool isBankrupt, int turnsStuck, int timsCups)
     : name{name}, avatar{avatar}, balance{balance}, assets{0},
       currSquare{currSquare}, ownedProperties{ownedProperties}, isBankrupt{isBankrupt}, 
-      isStuck{stuck}, timsCups{timsCups} {
+      turnsStuck{turnsStuck}, timsCups{timsCups} {
 
   for (auto property : ownedProperties) {
     SquareInfo pInfo = property->getInfo();
@@ -188,7 +187,7 @@ bool Player::makePayment(size_t amount) {
 }
 
 void Player::moveTo(Square *newLocation) {
-  if (isStuck)
+  if (turnsStuck > 0)
     throw Disallowed{"Cannot move a stuck player!"};
   currSquare->removeVisitor(this);
   currSquare = newLocation;
@@ -230,16 +229,28 @@ void Player::buyProperty(Property *property) {
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, isStuck};
+      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, turnsStuck};
 }
 
-void Player::lockPosition() {
-  isStuck = true;
+void Player::makeStuck() {
+  turnsStuck = 3;
 }
 
-void Player::unlockPosition() {
-  isStuck = false;
+void Player::makeUnstuck() {
+  turnsStuck = 0;
 }
+
+void Player::passTurnStuck() {
+  if (turnsStuck == 1)
+    throw Disallowed("Player cannot wait out any more turns in DC Tims Line!");
+
+  --turnsStuck;
+}
+
+int Player::roll() {
+  return (rand() % 6) + 1;
+}
+
 
 void Player::trade(Player *o, Property *give, Property *receive) {
   if (!owns(give) || !o->owns(receive))
@@ -284,10 +295,10 @@ void Player::useTimsCup() {
   if (timsCups == 0)
     throw Disallowed("You don't have any Tims Cups.");
 
-  if (!isStuck)
+  if (turnsStuck == 0)
     throw Disallowed{"Nothing to use Tims Cup on."};
 
-  unlockPosition();
+  makeUnstuck();
   --timsCups;
 }
 
