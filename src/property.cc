@@ -23,9 +23,11 @@ void Property::setMortgaged() {
         }
     } else {
         isMortgaged = true;
+        numImprove = -1;
     }
 }
 
 void Property::setUnmortgaged() {
     isMortgaged = false;
+    numImprove = 0;
 }
