@@ -59,14 +59,8 @@ class Square {
     vector<Player*> visitors;
     public:
     Square(string name);
-    virtual ~Square();
-    virtual SquareInfo getInfo() const;
-    virtual bool isProperty() const = 0;
-    virtual bool isOwned() const = 0;
-    virtual Player* getOwner() = 0;
-    void addVisitor(Player* player);
-    void removeVisitor(Player* player);
-    vector<Player*> getVisitors() const;
+    virtual ~Square() = 0;
+    virtual SquareInfo getInfo() const = 0;
     
 };
 
