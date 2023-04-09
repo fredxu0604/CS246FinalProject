@@ -27,7 +27,7 @@ class NonProperty: public Square {
     public:
         NonProperty(string name);
         virtual ~NonProperty() = 0;
-        virtual void triggerEvent(Player *p);
+        virtual void triggerEvent(Player *p) = 0;
         SquareInfo getInfo() const override;
 };
 

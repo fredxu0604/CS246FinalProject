@@ -50,7 +50,7 @@ const map<Group, std::vector<std::string>> groupPropertyMap = {
 
 const map<PropertyType, std::vector<std::string>> residenceGymMap = {
     {PropertyType::Gym, vector<std::string>{"PAC", "CIF"}},
-    {PropertyType::Residence, vector<std::string>{"MKV", "UWP", "V1", "REV"}},
+    {PropertyType::Residence, vector<std::string>{"MKV", "UWP", "V1", "REV"}}
 };
 
 // const map<std::vector<std::string>, PropertyType> residenceGymMapByNames{
@@ -184,10 +184,10 @@ class Property: public Square {
     Property(string name);
     void setMortgaged();
     void setUnmortgaged();
-    virtual void improve();
-    virtual void unimprove();
-    virtual size_t getVisitFee() const;
-    virtual SquareInfo getInfo() const;
+    virtual void improve() = 0;
+    virtual void unimprove() = 0;
+    virtual size_t getVisitFee() const = 0;
+    virtual SquareInfo getInfo() const = 0;
     void setOwner(Player* player);
 };
 

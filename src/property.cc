@@ -16,7 +16,6 @@ void Property::setOwner(Player* player) {
     owner = player;
 }
 
-
 void Property::setMortgaged() {
     if (this->getInfo().type == PropertyType::Acedemic) {
         if (this->getInfo().numImprove > 0) {
@@ -30,4 +29,3 @@ void Property::setMortgaged() {
 void Property::setUnmortgaged() {
     isMortgaged = false;
 }
-
