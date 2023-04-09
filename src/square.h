@@ -5,7 +5,7 @@
 #include "squareinfo.h"
 
 
-const std::vector<string> allSquareNames{
+const std::vector<std::string> allSquareNames{
   "COLLECT OSAP",
   "AL",
   "SLC",
