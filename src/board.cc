@@ -7,6 +7,7 @@
 Board::Board(std::vector<Square *> &squares, std::vector<Player *> players, Player *currPlayer, TextDisplay *td)
     : theBoard(squares), thePlayers(players), currPlayer(currPlayer), td(td) {}
 
+
 BoardInfo Board::getInfo() const {
     return BoardInfo{currPlayer, theBoard, thePlayers};
 }
