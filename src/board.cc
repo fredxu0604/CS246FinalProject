@@ -15,9 +15,10 @@ BoardInfo Board::getInfo() const {
     return boardInfo;
 }
 
+
 void Board::update(std::string message, bool printBoard) {
-    if (printBoard) {
-        td->print(std::cout, getInfo(), message);
+    if (printBoard) {                                // only call the version that prints the board if printBoard is true.
+        td->print(std::cout, getInfo(), message);    // calls the print method of td, passes cout as ostream &out.
     } else {
         td->print(std::cout, message);
     }
