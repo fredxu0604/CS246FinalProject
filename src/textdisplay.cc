@@ -25,7 +25,7 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info, std::str
         board.push_back(row);
     }
     
-    // Print the game board
+    // Print the game board (with player's position?)
     for (const auto &row : board) {
         for (char cell : row) {
             out << cell;
@@ -33,7 +33,7 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info, std::str
         out << std::endl;
     }
 
-    // Print players' information
+    // Print players' information 
     for (const auto &player : board_info.players) {
         auto playerInfo = player->getInfo();
         out << playerInfo.name << " (balance: $" << playerInfo.balance << ")" << std::endl;
