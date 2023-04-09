@@ -54,7 +54,6 @@ const map<PropertyType, std::vector<std::string>> residenceGymMap = {
 };
 
 
-
 const map<int, size_t> residenceRentMap = {
     {1, 25},
     {2, 50},
@@ -129,8 +128,6 @@ const map<string, map<size_t, size_t>> tuitionCostMap = {
     {"MC", {{0, 35}, {1, 175}, {2, 500}, {3, 1100}, {4, 1300}, {5, 1500}}},
     {"DC", {{0, 50}, {1, 200}, {2, 600}, {3, 1400}, {4, 1700}, {5, 2000}}}
 };
-
-
 
 class Property: public Square {
     protected:

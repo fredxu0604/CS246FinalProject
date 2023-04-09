@@ -21,6 +21,41 @@ int findIndexByName(std::vector<Square *> &squares, std::string name) {
     return index;
 }
 
+// helper
+// ask the player to use roll up rim cup or balance to escape from DC Tims Line.
+
+void payBalanceOrCup(Player *p) {
+    int input = 0;
+    // if player doesn't have enough fund but he has tims cup
+    if (p->getInfo().balance < DCTimsLineFee && p->getInfo().timsCups > 0) {
+        p->useTimsCup();   // use the tims cup
+        std::cout << "You have chosen to use the Roll Up the Rim Cup. And you will get out of here!" << std::endl;
+        return; 
+    } else if (p->getInfo().balance > DCTimsLineFee && p->getInfo().timsCups < 0) {
+        p->makePayment(DCTimsLineFee);
+        std::cout << "You have chosen to pay $"<< DCTimsLineFee<< ". And you will get out of here!" << std::endl;
+        return;
+    } else {    // player's choice now
+        while (true) {
+            std::cout << "Enter '1' to pay $"<< DCTimsLineFee << " or '2' to use Roll Up the Rim Cup";
+            std::cin >> input;
+            if (input == 1) {
+                p->makePayment(DCTimsLineFee);
+                p->makeUnstuck();
+                std::cout << "You have chosen to pay $"<< DCTimsLineFee<< ". And you will get out of here!" << std::endl;
+                break;
+            } else if (input == 2) {
+                p->useTimsCup();
+                p->makeUnstuck();
+                std::cout << "You have chosen to use the Roll Up the Rim Cup. And you will get out of here!" << std::endl;
+                break;
+            } else {
+                std::cout << "Invalid input. Please enter '1' or '2'." << std::endl;
+            }
+        }
+    }
+}
+
 NonProperty::NonProperty(string name): Square{name} {}
 
 SquareInfo NonProperty::getInfo() const {
@@ -48,12 +83,61 @@ void CollectOSAP::triggerEvent(Player *p) {
     p->addFunds(OSAPFee);
 }
 
-DCTimsLine::DCTimsLine(string name): NonProperty{name} {}
+DCTimsLine::DCTimsLine(string name, std::vector<Square *> &squares): NonProperty{name},
+squares{squares} {}
 
-DCTimsLine::~DCTimsLine() {}
+DCTimsLine::~DCTimsLine() {
+    for (auto s: squares) {
+        delete s;
+    }
+    squares.clear();
+}
 
 void DCTimsLine::triggerEvent(Player *p) {
-    // need to implement stuck
+    // roll the dice twice
+    int index = p->findIndex(squares); 
+    int move1 = p->roll();
+    int move2 = p->roll();
+    int newIndex = (index + move1 + move2 + squares.size()) % squares.size();
+    // if player just land on this
+    if (p->getInfo().turnsStuck == 0) {
+        p->moveTo(squares[newIndex]);
+        return;
+    }
+    // if it's a double roll
+    if (move1 == move2) {  // double roll, player got released
+            p->moveTo(squares[newIndex]);
+            p->makeUnstuck();
+            return;
+    }
+    // if it's the third time play stuck here
+    if (p->getInfo().turnsStuck == 1) { // player must leave
+        if (p->getInfo().balance < DCTimsLineFee && p->getInfo().timsCups == 0) {
+            throw InsufficientFunds{"You don't have enough balance or Roll Up the Rim Cup!"};
+        } else {
+            payBalanceOrCup(p);
+            p->moveTo(squares[newIndex]);  // good to go (and must go)
+            p->makeUnstuck();
+        }
+    } else {     // player can choose to wait or pay or use cup
+         while (true) {
+            int input;
+            std::cout << "Enter '1' to wait or '2' to use balance or cup";
+            std::cin >> input;
+            if (input == 1) {
+                std::cout << "You just choose to wait."<<std::endl;
+                p->passTurnStuck();
+                break;
+            } else if (input == 2) {
+                payBalanceOrCup(p);
+                p->makeUnstuck();
+                p->moveTo(squares[newIndex]);
+                break;
+            } else {
+                std::cout << "Invalid input. Please enter '1' or '2'." << std::endl;
+            }
+        }
+    }
 }
 
 GoToTims::GoToTims(string name, std::vector<Square *> &squares): NonProperty{name}, squares{squares}{}
@@ -68,6 +152,7 @@ GoToTims::~GoToTims() {
 void GoToTims::triggerEvent(Player *p) {
     int timsIndex = findIndexByName(squares, "DCTimsLine");
     p->moveTo(squares[timsIndex]);
+    p->makeStuck();
 }
 
 GooseNesting::GooseNesting(string name): NonProperty{name} {}
@@ -131,8 +216,6 @@ SLC::~SLC() {
 
 void SLC::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {
-        // Seed the random number generator with the current time
-        srand(time(0));
         // Generate a random number between 1 and 100
         int rand_num = rand() % 100 + 1;
         if (rand_num == 1) {
@@ -147,8 +230,6 @@ void SLC::triggerEvent(Player *p) {
     int timsIndex = findIndexByName(squares, "GoToTims");
     int OSAPIndex = findIndexByName(squares, "collectOSAP");
 
-    // Seed the random number generator with the current time
-    srand(time(0));
     // Generate a random number between 1 and 24
     int rand_num = rand() % 24 + 1;
     // Determine which thing will happen based on the value generated.
@@ -181,7 +262,7 @@ void SLC::triggerEvent(Player *p) {
 }
 
 
-NeedlesHall::NeedlesHall(string name, TimsCup* timsCup): NonProperty{name}, timsCups{timsCups} {}
+NeedlesHall::NeedlesHall(string name, TimsCup* timsCups): NonProperty{name}, timsCups{timsCups} {}
 
 NeedlesHall::~NeedlesHall() {
     delete timsCups;
@@ -189,8 +270,6 @@ NeedlesHall::~NeedlesHall() {
 
 void NeedlesHall::triggerEvent(Player *p) {
     if (timsCups->getAvailable() > 0) {
-        // Seed the random number generator with the current time
-        srand(time(0));
         // Generate a random number between 1 and 100
         int rand_num = rand() % 100 + 1;
         if (rand_num == 1) {
@@ -200,9 +279,7 @@ void NeedlesHall::triggerEvent(Player *p) {
     }
     size_t payment = 0;
     size_t gain = 0;
-    // Seed the random number generator with the current time
-    srand(time(0));
-
+    
     // Generate a random number between 1 and 18
     int rand_num = rand() % 18 + 1;
 

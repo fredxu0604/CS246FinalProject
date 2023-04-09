@@ -10,6 +10,7 @@
 const size_t tuitionPayment = 300;
 const size_t coopFee = 150;
 const size_t OSAPFee = 200;
+const size_t DCTimsLineFee = 50;
 
 class NonProperty: public Square {
     public:
@@ -28,8 +29,9 @@ class CollectOSAP: public NonProperty {
 };
 
 class DCTimsLine: public NonProperty {
+    std::vector<Square *> &squares;
     public:
-        DCTimsLine(string name);
+        DCTimsLine(string name, std::vector<Square *> &squares);
         ~DCTimsLine() override;
         void triggerEvent(Player *p) override;
 };
@@ -62,8 +64,6 @@ class CoopFee: public NonProperty {
         ~CoopFee() override;
         void triggerEvent(Player *p) override;
 };
-
-
 
 class SLC: public NonProperty {
     std::vector<Square *> &squares;
