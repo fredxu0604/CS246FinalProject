@@ -2,12 +2,8 @@
 #define __SQUARE_H__
 
 #include <string>
-#include <vector>
 #include "squareinfo.h"
 
-using namespace std;
-
-class Player;
 
 const std::vector<string> allSquareNames{
   "COLLECT OSAP",
@@ -55,10 +51,9 @@ const std::vector<string> allSquareNames{
 
 class Square {
     protected:
-    string name;
-    vector<Player*> visitors;
+    std::string name;
     public:
-    Square(string name);
+    Square(std::string name);
     virtual ~Square() = 0;
     virtual SquareInfo getInfo() const = 0;
     
