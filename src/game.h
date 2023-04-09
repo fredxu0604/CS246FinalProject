@@ -48,6 +48,8 @@ class Game {
 
     bool handleArrival();
 
+    std::string toString(size_t n);
+
     void trade(std::string name, std::string give, std::string receive);
     void trade(std::string name, size_t give, std::string receive);
     void trade(std::string name, std::string give, size_t receive);

@@ -14,6 +14,7 @@
 #include <exception>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -227,7 +228,7 @@ bool Game::handleArrival() {
         gameState = GameState::JustRolled;
         return true;
       }
-        
+
       gameState = GameState::IdleTurn;
       return false;
     }
@@ -235,6 +236,23 @@ bool Game::handleArrival() {
     Property *pp = findPropertyByName(currSquareInfo.name);
 
     if (pp != nullptr) {
+      SquareInfo pInfo = pp->getInfo();
+      Player *pOwner = pInfo.owner;
+
+      if (pOwner != nullptr) {
+
+        size_t visitFee = pp->getVisitFee();
+
+        gameBoard->update("This property is owned by " +
+                          pOwner->getInfo().name + "\nYou must pay " +
+                          to_string(visitFee) + "!");
+        
+
+        if (!currPlayer->makePayment(visitFee))
+          throw InsufficientFunds{"Cannnot make rent!"};
+
+        pOwner->addFunds(visitFee);
+      }
     }
 
   } catch (InsufficientFunds e) {
@@ -242,33 +260,37 @@ bool Game::handleArrival() {
 }
 
 void Game::saveToFile(string fileName) {
-  std::ofstream file(fileName + ".txt"); // Create or overwrite the file with the given name
-    if (file.is_open()) {
-        // Write the number of players to the file
-        file << numPlayers << endl;
-        // Write each player's data to the file
-        for (auto player : players) {
-          file << player->getInfo().name << " " << player->getInfo().avatar << " " << player->getInfo().timsCups 
-           << " " << player->getInfo().balance << " " << this->getSquareIdx(player->getInfo().currSquare->getInfo().name);
-          if (this->getSquareIdx(player->getInfo().currSquare->getInfo().name) == 10) {
-            if (player->getInfo().turnsStuck > 0) {
-              file << 1 << 3 - player->getInfo().turnsStuck;
-            } else {
-              file << 0;
-            }
-          }
-          file << endl;
+  std::ofstream file(
+      fileName + ".txt"); // Create or overwrite the file with the given name
+  if (file.is_open()) {
+    // Write the number of players to the file
+    file << numPlayers << endl;
+    // Write each player's data to the file
+    for (auto player : players) {
+      file << player->getInfo().name << " " << player->getInfo().avatar << " "
+           << player->getInfo().timsCups << " " << player->getInfo().balance
+           << " "
+           << this->getSquareIdx(player->getInfo().currSquare->getInfo().name);
+      if (this->getSquareIdx(player->getInfo().currSquare->getInfo().name) ==
+          10) {
+        if (player->getInfo().turnsStuck > 0) {
+          file << 1 << 3 - player->getInfo().turnsStuck;
+        } else {
+          file << 0;
         }
-        // Write each square's data to the file
-        for (auto property : properties) {
-            file << property->getInfo().name << " ";
-            if (property->getInfo().isOwned) {
-              file << property->getInfo().owner << " ";
-            } else {
-              file << "BANK ";
-            }
-            file << property->getInfo().numImprove << endl;
-        }
-        file.close();
+      }
+      file << endl;
     }
+    // Write each square's data to the file
+    for (auto property : properties) {
+      file << property->getInfo().name << " ";
+      if (property->getInfo().isOwned) {
+        file << property->getInfo().owner << " ";
+      } else {
+        file << "BANK ";
+      }
+      file << property->getInfo().numImprove << endl;
+    }
+    file.close();
+  }
 }
