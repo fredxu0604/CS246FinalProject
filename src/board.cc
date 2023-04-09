@@ -8,11 +8,7 @@ Board::Board(std::vector<Square *> &squares, std::vector<Player *> players, Play
     : theBoard(squares), thePlayers(players), currPlayer(currPlayer), td(td) {}
 
 BoardInfo Board::getInfo() const {
-    BoardInfo boardInfo;
-    boardInfo.currPlayer = currPlayer;
-    boardInfo.squares = theBoard;
-    boardInfo.players = thePlayers;
-    return boardInfo;
+    return BoardInfo{currPlayer, theBoard, thePlayers};
 }
 
 
