@@ -672,9 +672,7 @@ void Game::auctionLoop(Property *p) {
 
       int bid = stoi(input);
       if ((size_t)bid > currentPlayer->getInfo().balance) {
-        throw InsufficientFunds{
-            currentPlayer->getInfo().balance - (size_t)bid, nullptr,
-            "You don't have enough money to make this bid."};
+        throw Disallowed{"You don't have enough money to make this bid."};
       }
 
       if (bid <= highestBid) {
