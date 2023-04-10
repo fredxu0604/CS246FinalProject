@@ -3,6 +3,7 @@
 #include "property.h"
 #include "squareinfo.h"
 #include <cstdlib>
+#include <iostream>
 using namespace std;
 
 Player::~Player() {
@@ -255,37 +256,45 @@ void Player::passTurnStuck() {
 int Player::roll() { return (rand() % 6) + 1; }
 
 void Player::trade(Player *o, Property *give, Property *receive) {
-  if (!owns(give) || !o->owns(receive))
+  if (!owns(give) || !o->owns(receive)) {
     throw Disallowed{"Both players must own the properties they're trading!"};
+  }
 
   removeProperty(give);
   addProperty(receive);
   o->removeProperty(receive);
   o->addProperty(give);
+  cout<< "successful trade!"<<endl;
 }
 
 void Player::trade(Player *o, size_t give, Property *receive) {
-  if (!o->owns(receive))
+  if (!o->owns(receive)) {
     throw Disallowed{o->name + " Does not own the property they're trading!"};
+  }
 
-  if (!makePayment(give))
+  if (!makePayment(give)) {
     throw Disallowed{"you have insufficient funds to make this trade."};
+  }
 
   o->addFunds(give);
   o->removeProperty(receive);
   addProperty(receive);
+  cout<< "successful trade!"<<endl;
 }
 
 void Player::trade(Player *o, Property *give, size_t receive) {
-  if (!owns(give))
+  if (!owns(give)) {
     throw Disallowed{"You do not own the property you are trying to trade!"};
+  }
 
-  if (!o->makePayment(receive))
+  if (!o->makePayment(receive)) {
     throw Disallowed{o->name + " has insufficient funds to make this trade."};
+  }
 
   addFunds(receive);
   removeProperty(give);
   o->addProperty(give);
+  cout<< "successful trade!"<<endl;
 }
 
 void Player::addTimsCup() { ++timsCups; }
