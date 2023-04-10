@@ -23,6 +23,7 @@ class Board {
                                                                   // only call the version that prints the board if printBoard is true.
     void setCurrPlayer(Player *np);
     Command readCommand();
+    ~Board();
 };
 
 

@@ -14,7 +14,6 @@ class Game {
     int numSquares;
     int numProperties;
     bool initialized;
-    bool gameOn;
     bool testing;
     int die1;
     int die2;
@@ -30,7 +29,7 @@ class Game {
     std::vector<Player *> players;
 
     
-    void roll();
+    void roll(); // implemented
     void next(); // implemented
 
     void createSquares(); // implemented
@@ -64,8 +63,8 @@ class Game {
     // void unmortgage(std::string property);
     void bankrupt(Player *owedTo);
 
-    void displayAll();
-    void displayAssets();
+    void displayAll(); // implemented
+    void displayAssets(); // implemented
 
     void auctionLoop(Property *p); // implemented
 
@@ -73,9 +72,9 @@ class Game {
 
     void cannotUseThisCommand(); // implemented
     void moneyCriticalLoop(size_t owes, Player *owedTo = nullptr); // implemented
-    void stopGame();
+    void stopGame(); //implemented
 
-    void buyOrAuctionLoop();
+    void buyOrAuctionLoop(); // implemented
 
     public:
     Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented
@@ -84,7 +83,7 @@ class Game {
     void saveToFile(std::string fileName); // implemented
 
     
-    void newGame();
+    void newGame(); // implemented
     void runGameLoop(); // implemented
 
 };

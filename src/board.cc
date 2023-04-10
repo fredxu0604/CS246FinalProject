@@ -24,3 +24,11 @@ void Board::update(std::string message, bool printBoard) {
 void Board::setCurrPlayer(Player *np) {
     currPlayer = np;
 }
+
+Board::~Board() {
+    delete td;
+}
+
+Command Board::readCommand() {
+    return td->readCommand();
+}

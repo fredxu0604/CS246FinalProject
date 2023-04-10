@@ -23,9 +23,9 @@ using namespace std;
 
 Game::Game(bool testing, int die1, int die2)
     : numPlayers{0}, numSquares{40}, numProperties{28},
-      initialized{false}, gameOn{false}, testing{testing}, die1{die1},
+      initialized{false}, testing{testing}, die1{die1},
       die2{die2}, gameBoard{nullptr},
-      currPlayer{nullptr}, gameState{GameState::PreRoll}, tc{new TimsCup{}},
+      currPlayer{nullptr}, gameState{GameState::PreRoll}, tc{nullptr},
       squares{vector<Square *>{}}, properties{vector<Property *>{}},
       nonProperties{vector<NonProperty *>{}}, players{vector<Player *>{}} {}
 
@@ -78,9 +78,7 @@ void Game::loadFromFile(string fileName) {
     timsCupsInUse += timsCups;
   }
 
-  for (int i = 0; i < timsCupsInUse; ++i) {
-    tc->allocateOne();
-  }
+  tc = new TimsCup{4 - timsCupsInUse, timsCupsInUse};
 
   for (int i = 0; i < numProperties; ++i) {
     getline(inFile, line);
@@ -315,6 +313,11 @@ void Game::saveToFile(string fileName) {
 }
 
 void Game::runGameLoop() {
+  if (!initialized) {
+    cout << "Game is not initialized." << endl;
+    return;
+  }
+    
   while (true) {
     if (numPlayers < 2)
       break;
@@ -434,29 +437,32 @@ void Game::improve(string property, string mode) {
 
 // Display all properties for all players
 void Game::displayAll() {
-    // Since we have a vector of Player pointers called players which include all players.
-    for (const auto &player : players) {
-        if (!player->isBankrupt) {
-            std::cout << "Player " << player->name << "'s properties:" << std::endl;
-            for (const auto &property : player->ownedProperties) {
-                std::cout << property->name << std::endl;
-            }
-            std::cout << std::endl;
-        }
+  std::cout << "All properties for all players:" << std::endl;
+  // Since we have a vector of Player pointers called players which include all
+  // players.
+  for (const auto &player : players) {
+    PlayerInfo playerInfo = player->getInfo();
+
+    std::cout << "Player " << playerInfo.name << "'s properties:" << std::endl;
+    // loop over all properties for current player
+    for (const auto &property : playerInfo.ownedProperties) {
+      SquareInfo propertyInfo = property->getInfo();
+      std::cout << propertyInfo.name << std::endl;
     }
+  }
 }
 
 // Display all properties for the current player
 void Game::displayAssets() {
-    std::cout << "Current player " << currPlayer->name << "'s properties:" << std::endl;
-
-    for (const auto &property : currPlayer->ownedProperties) {
-        std::cout << property->name << std::endl;
-    }
+  PlayerInfo currPlayerInfo = currPlayer->getInfo();
+  std::cout << "Current player " << currPlayerInfo.name
+            << "'s properties:" << std::endl;
+  // loop over all properties for current player
+  for (const auto &property : currPlayerInfo.ownedProperties) {
+    SquareInfo propertyInfo = property->getInfo();
+    std::cout << propertyInfo.name << std::endl;
+  }
 }
-
-
-
 
 void Game::cannotUseThisCommand() {
   gameBoard->update("Cannot use this command right now.");
@@ -574,11 +580,19 @@ void Game::next() {
   int cpIdx = getPlayerIdx(currPlayer);
 
   currPlayer = players[(cpIdx + 1) % players.size()];
-
+  gameBoard->setCurrPlayer(currPlayer);
   gameBoard->update("It is now " + currPlayer->getInfo().name + "'s turn.");
 }
 
 void Game::roll() {
+
+  if (currPlayer->getInfo().turnsStuck != 0) {
+    gameBoard->update(
+        "You are stuck at DC Tims and cannot move (you NEED coffee)!");
+    gameState = GameState::PostRoll;
+    return;
+  }
+
   int r1, r2;
 
   if (testing) {
@@ -601,6 +615,9 @@ void Game::roll() {
     NonProperty *osap = nonProperties[0];
     osap->triggerEvent(currPlayer, squares, tc);
   }
+
+  currPlayer->moveTo(squares[newSquareIdx]);
+  handleArrival();
 }
 
 int Game::getSquareIdx(Square *sp) {
@@ -609,4 +626,151 @@ int Game::getSquareIdx(Square *sp) {
       return i;
   }
   return -1;
+}
+
+void Game::auctionLoop(Property *p) {
+  std::vector<Player *> biddingVector(players);
+  size_t highestBid = 0;
+  Player *highestBidder = nullptr;
+  gameBoard->update("Now we are bidding for the asset " + p->getInfo().name);
+  while (biddingVector.size() > 0) {
+    if (biddingVector.size() == 1) { // when there is only one player left
+      highestBidder->makePayment((size_t)highestBid);
+      highestBidder->addProperty(p);
+    }
+
+    for (auto iter = biddingVector.begin(); iter != biddingVector.end();
+         ++iter) {
+      Player *currentPlayer = *iter;
+      gameBoard->update("Now it's " + currentPlayer->getInfo().name +
+                        "'s turn.");
+
+      if (currentPlayer == highestBidder) {
+        // If the current player has already bid the highest amount, they can
+        // pass.
+        gameBoard->update("You have already bid the highest amount. Type "
+                          "'pass' to skip this turn.");
+        string input;
+        getline(cin, input);
+        if (input == "pass") {
+          continue;
+        }
+      }
+      gameBoard->update("The current highest bid is " + to_string(highestBid) +
+                        ".");
+      gameBoard->update("How much do you want to bid? (Type 'quit' to withdraw "
+                        "from the auction)");
+
+      string input;
+      getline(std::cin, input);
+
+      if (input == "quit") {
+        biddingVector.erase(iter);
+        --iter;
+        continue;
+      }
+
+      int bid = stoi(input);
+      if ((size_t)bid > currentPlayer->getInfo().balance) {
+        throw InsufficientFunds{
+            currentPlayer->getInfo().balance - (size_t)bid, nullptr,
+            "You don't have enough money to make this bid."};
+      }
+
+      if (bid <= highestBid) {
+        gameBoard->update(
+            "Your bid must be higher than the current highest bid.");
+        continue;
+      }
+
+      highestBid = bid;
+      highestBidder = currentPlayer;
+    }
+  }
+}
+
+void Game::newGame() {
+  createSquares();
+
+  numPlayers = 6;
+  vector<char> allowedAvatars{'G', 'B', 'D', 'P', 'S', '$', 'L', 'T'};
+
+  for (int i = 0; i < numPlayers; ++i) {
+    string name;
+
+    while (!(cin >> name)) {
+      cout << "Please enter a name for this player." << endl;
+    }
+
+    char avatar;
+
+    while (true) {
+      cout << "Please select this player's avatar." << endl;
+      if (!(cin >> avatar)) {
+        continue;
+      }
+
+      vector<char>::iterator it = allowedAvatars.begin();
+
+      bool found = false;
+      for (; it != allowedAvatars.end(); it++) {
+        if (*it == avatar) {
+          found = true;
+          allowedAvatars.erase(it);
+          break;
+        }
+      }
+
+      if (found) {
+        break;
+      }
+    }
+
+    players.emplace_back(
+        new Player{name, avatar, squares[0], vector<Property *>{}}, 1500, false, 0, 0);
+  }
+  currPlayer = players[0];
+  gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
+  tc = new TimsCup{};
+  gameState = GameState::PreRoll;
+  initialized = true;
+  runGameLoop();
+
+}
+
+void Game::buyOrAuctionLoop() {
+  gameBoard->update(
+      "Would you like to buy " +
+      currPlayer->getInfo().currSquare->getInfo().name + " for $" +
+      to_string(currPlayer->getInfo().currSquare->getInfo().cost) + "? (y/n) ");
+  char choice;
+  cin >> choice;
+
+  while (choice != 'y' && choice != 'n') {
+    gameBoard->update("Invalid input. Please enter 'y' or 'n': ");
+    cin >> choice;
+  }
+
+  if (choice == 'y') {
+    currPlayer->buyProperty(
+        findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+    gameBoard->update("Congratulations! You are now the owner of " +
+                      currPlayer->getInfo().currSquare->getInfo().name + ".");
+  } else {
+    auctionLoop(
+        findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+  }
+}
+
+void Game::stopGame() {
+  delete gameBoard;
+  delete tc;
+
+  for (auto p : squares) {
+    delete p;
+  }
+
+  for (auto p : players) {
+    delete p;
+  }
 }
