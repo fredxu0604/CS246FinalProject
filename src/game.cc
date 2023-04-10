@@ -1,11 +1,13 @@
 #include "game.h"
 #include "acedemic.h"
+#include "command.h"
 #include "gameexception.h"
 #include "gym.h"
 #include "nonproperty.h"
 #include "player.h"
 #include "residence.h"
 #include "square.h"
+#include "state.h"
 #include "textdisplay.h"
 #include "timscup.h"
 #include <exception>
@@ -257,6 +259,7 @@ void Game::handleArrival() {
 
       } else {
         buyOrAuctionLoop();
+        gameState = GameState::PostRoll;
         return;
       }
     }
@@ -279,7 +282,8 @@ void Game::saveToFile(string fileName) {
     // Write each player's data to the file
     for (auto player : players) {
       file << player->getInfo().name << " " << player->getInfo().avatar << " "
-           << player->getInfo().timsCups << " " << (player->getInfo().isBankrupt ? 0 : player->getInfo().balance)
+           << player->getInfo().timsCups << " "
+           << (player->getInfo().isBankrupt ? 0 : player->getInfo().balance)
            << " "
            << this->getSquareIdx(player->getInfo().currSquare->getInfo().name);
       if (this->getSquareIdx(player->getInfo().currSquare->getInfo().name) ==
@@ -311,6 +315,7 @@ void Game::runGameLoop() {
     cout << "Game is not initialized." << endl;
     return;
   }
+  gameState = GameState::PreRoll;
 
   while (true) {
     if (numPlayers < 2)
@@ -739,9 +744,8 @@ void Game::newGame() {
       }
     }
 
-    players.emplace_back(
-        new Player{name, avatar, squares[0], vector<Property *>{}, 1500, false,
-        0, 0});
+    players.emplace_back(new Player{name, avatar, squares[0],
+                                    vector<Property *>{}, 1500, false, 0, 0});
   }
   currPlayer = players[0];
   gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
@@ -793,7 +797,6 @@ void Game::stopGame() {
 }
 
 void Game::bankrupt(Player *owedTo) {
-  return;
 
   PlayerInfo pInfo = currPlayer->getInfo();
 
@@ -817,19 +820,101 @@ void Game::bankrupt(Player *owedTo) {
     owedTo->addFunds(pInfo.balance);
 
     for (auto p : pInfo.ownedProperties) {
-      currPlayer->removeProperty(p);
-      owedTo->addProperty(p);
 
       SquareInfo propInfo = p->getInfo();
 
       if (propInfo.isMortgaged) {
-        if (!owedTo->makePayment(propInfo.cost / 10)) {
-          
+        size_t extraFee = propInfo.cost / 10;
+        if (!owedTo->makePayment(extraFee)) {
+          size_t currPlayersLen = players.size();
+
+          gameBoard->update("Looks like " + owedTo->getInfo().name +
+                                " is now in trouble too!",
+                            false);
+
+          Player *origPlayer = currPlayer;
+          currPlayer = owedTo;
+          moneyCriticalLoop(propInfo.cost / 10);
+          currPlayer = origPlayer;
+
+          if (players.size() < currPlayersLen) {
+            // owedTo went bankrupt too!
+            bankrupt(nullptr);
+            return;
+          }
+
+          // owedTo managed to escape bankruptcy
         }
+        Player *origPlayer = currPlayer;
+        currPlayer = owedTo;
+        size_t unMortgageCost = propInfo.cost / 2;
+
+        gameBoard->update("Attention" + owedTo->getInfo().name +
+                          "! A property which is being given to you (" +
+                          propInfo.name + ") is mortgaged.");
+        gameBoard->update("You may now unmortgage the property for " +
+                              to_string(unMortgageCost) + ".",
+                          false);
+
+        while (true) {
+          gameBoard->update(
+              "Unmortgage the property? Use 'unmortgage " + propInfo.name +
+                  "' to unmortgage or 'unmortgage cancel' to refuse (increases "
+                  "future unmortgage cost by 10%!).",
+              false);
+
+          Command cmd = gameBoard->readCommand();
+
+          if (cmd.type != CommandType::Unmortgage)
+            continue;
+
+          try {
+            if (cmd.args[0] == "cancel") {
+              p->stepUpUnmortgageFee(extraFee);
+              break;
+            }
+          } catch (out_of_range &e) {
+            gameBoard->update("You must choose to either mortgage or cancel.");
+            continue;
+          }
+
+          try {
+            if (cmd.args[0] == propInfo.name) {
+              if (!owedTo->makePayment(unMortgageCost))
+                throw Disallowed{
+                    "You don't have the money to unmortgage this property."};
+
+              p->setUnmortgaged();
+            } else {
+              continue;
+            }
+            break;
+          } catch (Disallowed &e) {
+            gameBoard->update(e.getMessage());
+            p->stepUpUnmortgageFee(extraFee);
+            break;
+          }
+        }
+
+        currPlayer = origPlayer;
       }
 
-
+      currPlayer->removeProperty(p);
+      owedTo->addProperty(p);
     }
-
   }
+
+  vector<Player *>::iterator it = players.begin();
+  Player *bankruptPlayer = currPlayer;
+  next();
+
+  for (; it != players.end(); it++) {
+    if (*it == bankruptPlayer) {
+      players.erase(it);
+      delete bankruptPlayer;
+      break;
+    }
+  }
+
+  gameState = GameState::PreRoll;
 }

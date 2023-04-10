@@ -96,11 +96,13 @@ protected:
   Player *owner;
   bool isMortgaged;
   int numImprove;
+  size_t unmortgageFeeAddon;
 
 public:
   Property(string name);
   void setMortgaged();
   void setUnmortgaged();
+  void stepUpUnmortgageFee(size_t amount);
   virtual void improve() = 0;
   virtual void unimprove() = 0;
   virtual size_t getVisitFee() const = 0;

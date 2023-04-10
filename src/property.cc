@@ -3,7 +3,7 @@
 #include "squareinfo.h"
 using namespace std;
 
-Property::Property(string name) : Square(name) {
+Property::Property(string name) : Square{name}, group{propertyGroupMap.at(name)}, isMortgaged{false}, numImprove{0}, unmortgageFeeAddon{0} {
   owner = nullptr;
   isMortgaged = false;
   group = propertyGroupMap.at(name); // using at because map[] only support non
@@ -26,4 +26,9 @@ void Property::setMortgaged() {
 void Property::setUnmortgaged() {
   isMortgaged = false;
   numImprove = 0;
+  unmortgageFeeAddon = 0;
+}
+
+void Property::stepUpUnmortgageFee(size_t amount) {
+  unmortgageFeeAddon = amount;
 }
