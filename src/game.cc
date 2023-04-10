@@ -60,7 +60,7 @@ void Game::loadFromFile(string fileName) {
     int stuckSignal = 0;
     int turnsStuck = 0;
 
-    if (position == getSquareIdx("DC Tims Line"))
+    if (position == getSquareIdx("DC TIMS LINE"))
       iss >> stuckSignal;
 
     if (stuckSignal == 1) {
@@ -717,7 +717,7 @@ void Game::newGame() {
     string name;
 
     cout << "Please enter a name for this player." << endl;
-    
+
     while (!(cin >> name)) {
       cout << "Please enter a name for this player." << endl;
     }
