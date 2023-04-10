@@ -740,8 +740,8 @@ void Game::newGame() {
     }
 
     players.emplace_back(
-        new Player{name, avatar, squares[0], vector<Property *>{}}, 1500, false,
-        0, 0);
+        new Player{name, avatar, squares[0], vector<Property *>{}, 1500, false,
+        0, 0});
   }
   currPlayer = players[0];
   gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
