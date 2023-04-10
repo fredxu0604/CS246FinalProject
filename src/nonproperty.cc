@@ -109,12 +109,14 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
   int newIndex = (index + move1 + move2 + squares.size()) % squares.size();
   // if player just land on this
   if (p->getInfo().turnsStuck == 0) {
+    cout<< "Nothing happens"<<endl;
     return;
   }
   // if it's a double roll
   if (move1 == move2) { // double roll, player got released
     p->moveTo(squares[newIndex]);
     p->makeUnstuck();
+    cout<< "Congrats you are out of here by rolling double"<<endl;
     return;
   }
   // if it's the third time play stuck here
@@ -127,6 +129,7 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
       payBalanceOrCup(p);
       p->moveTo(squares[newIndex]); // good to go (and must go)
       p->makeUnstuck();
+      cout << "You get out of here" << endl;
     }
   } else { // player can choose to wait or pay or use cup
     while (true) {
@@ -161,6 +164,7 @@ void GoToTims::triggerEvent(Player *p, std::vector<Square *> &squares,
   int timsIndex = findIndexByName(squares, "DC TIMS LINE");
   p->moveTo(squares[timsIndex]);
   p->makeStuck();
+  cout<<"Oh no you are trapped in DC tims line"<<endl;
 }
 
 GooseNesting::GooseNesting(string name) : NonProperty{name} {}
