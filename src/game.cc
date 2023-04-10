@@ -101,7 +101,9 @@ void Game::loadFromFile(string fileName) {
     for (int i = 0; i < numImprovements; ++i) {
       property->improve();
     }
-    owner->addProperty(property);
+    if (owner) {
+      owner->addProperty(property);
+    }
     property->setOwner(owner);
   }
 
