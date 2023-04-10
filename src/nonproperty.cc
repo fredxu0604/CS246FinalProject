@@ -109,7 +109,6 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
   int newIndex = (index + move1 + move2 + squares.size()) % squares.size();
   // if player just land on this
   if (p->getInfo().turnsStuck == 0) {
-    p->moveTo(squares[newIndex]);
     return;
   }
   // if it's a double roll
