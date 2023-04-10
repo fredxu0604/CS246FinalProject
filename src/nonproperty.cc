@@ -109,7 +109,7 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
     // if it's the third time play stuck here
     if (p->getInfo().turnsStuck == 1) { // player must leave
         if (p->getInfo().balance < DCTimsLineFee && p->getInfo().timsCups == 0) {
-            throw InsufficientFunds{"You don't have enough balance or Roll Up the Rim Cup!"};
+            throw InsufficientFunds{p->getInfo().balance - DCTimsLineFee, nullptr, "You don't have enough balance or Roll Up the Rim Cup!"};
         } else {
             payBalanceOrCup(p);
             p->moveTo(squares[newIndex]);  // good to go (and must go)
@@ -168,7 +168,7 @@ void Tuition::triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *t
                 std::cout << "You have chosen to pay $"<< tuitionPayment<< "." << endl;
                 break;
             } else {
-                throw InsufficientFunds{"You have insufficient funds!"};
+                throw InsufficientFunds{p->getInfo().balance - tuitionPayment, nullptr, "You have insufficient funds!"};
             }
         } else if (input == 2) {
             size_t totalAsset = p->getInfo().netWorth;
@@ -189,7 +189,7 @@ void CoopFee::triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *t
     if (p->makePayment(coopFee)) {
         std::cout<<"You have paid " << coopFee << " as Coop Fee. Cali or Busted!"<< endl;
     } else {
-        throw InsufficientFunds{"You have insufficient funds!"};
+        throw InsufficientFunds{p->getInfo().balance - coopFee, nullptr, "You have insufficient funds!"};
     }
 }
 
@@ -285,7 +285,7 @@ void NeedlesHall::triggerEvent(Player *p, std::vector<Square *> &squares, TimsCu
         if (p->makePayment(payment)) {
             cout<<"You have paid " << payment << "." << endl;
         } else {
-            throw InsufficientFunds{"You do not have enough fund"};
+            throw InsufficientFunds{p->getInfo().balance - payment, nullptr, "You do not have enough fund"};
         }
     } else {
         p->addFunds(gain);
