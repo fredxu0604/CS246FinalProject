@@ -364,6 +364,32 @@ void Game::improve(string property, string mode) {
   }
 }
 
+// Display all properties for all players
+void Game::displayAll() {
+    // Since we have a vector of Player pointers called players which include all players.
+    for (const auto &player : players) {
+        if (!player->isBankrupt) {
+            std::cout << "Player " << player->name << "'s properties:" << std::endl;
+            for (const auto &property : player->ownedProperties) {
+                std::cout << property->name << std::endl;
+            }
+            std::cout << std::endl;
+        }
+    }
+}
+
+// Display all properties for the current player
+void Game::displayAssets() {
+    std::cout << "Current player " << currPlayer->name << "'s properties:" << std::endl;
+
+    for (const auto &property : currPlayer->ownedProperties) {
+        std::cout << property->name << std::endl;
+    }
+}
+
+
+
+
 void Game::cannotUseThisCommand() {
   gameBoard->update("Cannot use this command right now.");
 }
