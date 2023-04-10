@@ -53,7 +53,7 @@ class Game {
     void trade(std::string name, size_t give, std::string receive); // implemented
     void trade(std::string name, std::string give, size_t receive); // implemented
 
-    void tradeSwitch(std::string name, std::string give, std::string receive);
+    void tradeSwitch(std::string name, std::string give, std::string receive); // implemented
 
     void tradeLoop(const std::vector<std::string> &args);
 
@@ -65,14 +65,14 @@ class Game {
     void displayAll();
     void displayAssets();
 
-    void auctionLoop();
+    void auctionLoop(Property *p);
     void auctionBid(size_t amount);
     void auctionWithdraw();
 
     void useCup();
 
     void cannotUseThisCommand(); // implemented
-    void moneyCriticalLoop(size_t owes, Player *owedTo = nullptr);
+    void moneyCriticalLoop(size_t owes, Player *owedTo = nullptr); // implemented
     void stopGame();
 
     void buyOrAuctionLoop();
