@@ -225,11 +225,13 @@ void Game::handleArrival() {
 
   try {
     if (npp != nullptr) {
+      
       Square *currSquare = currPlayerInfo.currSquare;
+      gameBoard->update("You are now at " + currSquare->getInfo().name + ".", false);
       npp->triggerEvent(currPlayer, squares, tc);
 
       if (currPlayer->getInfo().currSquare != currSquare) {
-        gameState = GameState::JustLanded;
+        handleArrival();
         return;
       }
 
@@ -241,6 +243,7 @@ void Game::handleArrival() {
 
     if (pp != nullptr) {
       SquareInfo pInfo = pp->getInfo();
+      gameBoard->update("You are now at " + pInfo.name + ".", false);
       Player *pOwner = pInfo.owner;
 
       if (pOwner != nullptr) {
@@ -256,10 +259,11 @@ void Game::handleArrival() {
 
         pOwner->addFunds(visitFee);
         gameState = GameState::IdleTurn;
+        gameBoard->update("You have paid rent.", false);
         return;
 
       } else {
-        gameState = GameState::ChoiceBuyProperty;
+        buyOrAuctionLoop();
         return;
       }
     }
@@ -268,7 +272,7 @@ void Game::handleArrival() {
                      "nor nonproperty!"};
 
   } catch (InsufficientFunds e) {
-    warnMoneyCritical();
+    moneyCriticalLoop();
     gameState = GameState::MoneyCritical;
     return;
   }
@@ -320,53 +324,6 @@ void Game::runGameLoop() {
     try {
 
 
-      switch (cmd.type) {
-
-      case CommandType::All:
-        if (gameState == GameState::ChoiceTuition) {
-          cannotUseThisCommand();
-          break;
-        }
-        displayAll();
-        break;
-
-      case CommandType::Assets:
-        if (gameState == GameState::ChoiceTuition) {
-            cannotUseThisCommand();
-            break;
-          }
-        displayAssets();
-        break;
-
-      case CommandType::AuctionBid:
-        cannotUseThisCommand();
-        break;
-
-      case CommandType::AuctionWithdraw:
-        cannotUseThisCommand();
-        break;
-
-      case CommandType::Bankrupt:
-        if (gameState != GameState::MoneyCritical) {
-          cannotUseThisCommand();
-          break;
-        }
-        bankrupt();
-        break;
-
-      case CommandType::Improve:
-        if (gameState == GameState::MoneyCritical ||
-            gameState == GameState::ChoiceBuyProperty) {
-              cannotUseThisCommand();
-              break;
-            }
-
-        try {
-          improve(cmd.args[0], cmd.args[1]);
-        } catch (out_of_range) {
-          gameBoard->update("not enough arguments", false);
-        }
-      }
 
 
 
@@ -413,10 +370,12 @@ void Game::cannotUseThisCommand() {
   gameBoard->update("Cannot use this command right now.", false);
 }
 
-void Game::warnMoneyCritical() {
+void Game::moneyCriticalLoop() {
   gameBoard->update("You owe more money than you have!\n Mortgage properties "
                     "or trade with other players to raise money (or declare "
                     "bankruptcy if you're truly done for)",
                     false);
+
+  // ...
 }
 

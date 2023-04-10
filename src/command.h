@@ -5,8 +5,6 @@
 
 enum class CommandType {
     Trade,
-    TradeAccept,
-    TradeReject,
     Improve,
     Mortgage,
     Unmortgage,
@@ -16,11 +14,6 @@ enum class CommandType {
     Save,
     Roll,
     Next,
-    Pay,
-    UseCup,
-    TuitionChoice,
-    AuctionBid,
-    AuctionWithdraw
 
 };
 

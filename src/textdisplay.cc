@@ -72,10 +72,6 @@ Command TextDisplay::readCommand() {
     // Convert the command type string to the corresponding CommandType enum
     if (cmdType == "trade") {
         command.type = CommandType::Trade;
-    } else if (cmdType == "accept") {
-        command.type = CommandType::TradeAccept;
-    } else if (cmdType == "reject") {
-        command.type = CommandType::TradeReject;
     } else if (cmdType == "improve") {
         command.type = CommandType::Improve;
     } else if (cmdType == "mortgage") {
@@ -94,18 +90,8 @@ Command TextDisplay::readCommand() {
         command.type = CommandType::Roll;
     } else if (cmdType == "next") {
         command.type = CommandType::Next;
-    } else if (cmdType == "pay") {
-        command.type = CommandType::Pay;
-    } else if (cmdType == "usecup") {
-        command.type = CommandType::UseCup;
-    } else if (cmdType == "tuition") {
-        command.type = CommandType::TuitionChoice;
-    } else if (cmdType == "bid") {
-        command.type = CommandType::AuctionBid;
-    } else if (cmdType == "withdraw") {
-        command.type = CommandType::AuctionWithdraw;
     } else {
-        throw std::runtime_error("Invalid command type");
+        print(std::cout, "Invalid command '" + cmdType + "'");
     }
 
     // Read the command arguments
