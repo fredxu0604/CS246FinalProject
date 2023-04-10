@@ -55,6 +55,8 @@ class Game {
 
     void tradeSwitch(std::string name, std::string give, std::string receive);
 
+    void tradeLoop();
+
     void improve(std::string property, std::string mode); // implemented
     // void mortgage(std::string property);
     // void unmortgage(std::string property);
@@ -63,15 +65,17 @@ class Game {
     void displayAll();
     void displayAssets();
 
-    void auction();
+    void auctionLoop();
     void auctionBid(size_t amount);
     void auctionWithdraw();
 
     void useCup();
 
     void cannotUseThisCommand(); // implemented
-    void warnMoneyCritical();
+    void moneyCriticalLoop();
     void stopGame();
+
+    void buyOrAuctionLoop();
 
     public:
     Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented
