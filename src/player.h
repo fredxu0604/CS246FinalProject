@@ -19,7 +19,6 @@ class Player {
   int timsCups;
 
   bool hasMonopoly(const std::string &propertyName);
-  bool isStuck();
   Property *validateImprovement(const std::string &propertyName);
   Property *validateMortgage(const std::string &propertyName);
 
@@ -27,6 +26,7 @@ public:
   Player(const std::string &name, char avatar, Square *currSquare,
          std::vector<Property *> ownedProperties, size_t balance = 0,
          bool isBankrupt = false, int turnsStuck = 0, int timsCups = 0);
+  ~Player();
 
   PlayerInfo getInfo() const;
 

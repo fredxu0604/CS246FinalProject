@@ -5,6 +5,12 @@
 #include <cstdlib>
 using namespace std;
 
+Player::~Player() {
+  for (Property *p : ownedProperties) {
+    delete p;
+  }
+}
+
 bool Player::owns(const string &propertyName) const {
   for (auto property : ownedProperties) {
     if (property->getInfo().name == propertyName)

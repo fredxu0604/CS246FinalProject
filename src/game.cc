@@ -89,11 +89,15 @@ void Game::loadFromFile(string fileName) {
     iss >> ownerName;
     iss >> numImprovements;
 
-    Player *owner;
+    Player *owner = nullptr;
 
-    if (ownerName == "BANK") {
-      owner = nullptr;
-    } else {
+ 
+    // if (ownerName == "BANK") {
+    //   owner = nullptr;
+    // } else {
+    //   owner = findPlayerByName(ownerName);
+    // }
+    if (findPlayerByName(ownerName)) {
       owner = findPlayerByName(ownerName);
     }
 
@@ -110,6 +114,7 @@ void Game::loadFromFile(string fileName) {
   currPlayer = players[0];
   gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
   initialized = true;
+  gameBoard->update();
   runGameLoop();
 }
 
@@ -756,6 +761,7 @@ void Game::newGame() {
   tc = new TimsCup{};
   gameState = GameState::PreRoll;
   initialized = true;
+  gameBoard->update();
   runGameLoop();
 }
 
