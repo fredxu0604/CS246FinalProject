@@ -21,10 +21,9 @@
 
 using namespace std;
 
-Game::Game(bool testing, int die1, int die2)
+Game::Game(bool testing)
     : numPlayers{0}, numSquares{40}, numProperties{28},
-      initialized{false}, testing{testing}, die1{die1},
-      die2{die2}, gameBoard{nullptr},
+      initialized{false}, testing{testing}, gameBoard{nullptr},
       currPlayer{nullptr}, gameState{GameState::PreRoll}, tc{nullptr},
       squares{vector<Square *>{}}, properties{vector<Property *>{}},
       nonProperties{vector<NonProperty *>{}}, players{vector<Player *>{}} {}
@@ -317,7 +316,7 @@ void Game::runGameLoop() {
     cout << "Game is not initialized." << endl;
     return;
   }
-    
+
   while (true) {
     if (numPlayers < 2)
       break;
@@ -372,7 +371,28 @@ void Game::runGameLoop() {
         if (gameState != GameState::PreRoll) {
           cannotUseThisCommand();
         } else {
-          roll();
+          if (testing) {
+            try {
+              int d1, d2;
+              istringstream arg1Stream{cmd.args[0]};
+              istringstream arg2Stream{cmd.args[1]};
+
+              if (!(arg1Stream >> d1)) {
+                throw Disallowed{"Invalid number"};
+              }
+              if (!(arg2Stream >> d2)) {
+                throw Disallowed{"Invalid number"};
+              }
+
+              roll(d1, d2);
+
+            } catch (out_of_range) {
+              gameBoard->update("Please provide valid die roll numbers "
+                                "(testing mode is enabled)");
+            }
+          } else {
+            roll();
+          }
         }
         break;
 
@@ -584,7 +604,7 @@ void Game::next() {
   gameBoard->update("It is now " + currPlayer->getInfo().name + "'s turn.");
 }
 
-void Game::roll() {
+void Game::roll(int die1, int die2) {
 
   if (currPlayer->getInfo().turnsStuck != 0) {
     gameBoard->update(
@@ -725,7 +745,8 @@ void Game::newGame() {
     }
 
     players.emplace_back(
-        new Player{name, avatar, squares[0], vector<Property *>{}}, 1500, false, 0, 0);
+        new Player{name, avatar, squares[0], vector<Property *>{}}, 1500, false,
+        0, 0);
   }
   currPlayer = players[0];
   gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
@@ -733,7 +754,6 @@ void Game::newGame() {
   gameState = GameState::PreRoll;
   initialized = true;
   runGameLoop();
-
 }
 
 void Game::buyOrAuctionLoop() {
@@ -773,6 +793,6 @@ void Game::stopGame() {
 
   for (auto p : players) {
     delete p;
-     p = nullptr;
+    p = nullptr;
   }
 }
