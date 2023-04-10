@@ -664,8 +664,9 @@ void Game::auctionLoop(Property *p) {
     if (biddingVector.size() == 1) { // when there is only one player left
       highestBidder->makePayment(highestBid);
       highestBidder->addProperty(p);
+      cout<<"Congrats! "<< biddingVector[0]->getInfo().name<< " bought the property for $" <<highestBid<<endl;
+      break;
     }
-
     for (auto iter = biddingVector.begin(); iter != biddingVector.end();
          ++iter) {
       Player *currentPlayer = *iter;
@@ -697,11 +698,26 @@ void Game::auctionLoop(Property *p) {
       }
 
       size_t bid = stoul(input);
-      if (bid > currentPlayer->getInfo().balance) {
-        throw Disallowed{"You don't have enough money to make this bid."};
+
+      bool is_quit = false;
+      while (bid > currentPlayer->getInfo().balance) {
+        cout<< "You can't bid this much since you don't have enough balance"<<endl;
+        cout<< "Please re-enter the bid or quit." <<endl;
+        string input;
+        getline(std::cin, input);
+
+        if (input == "quit") {
+          biddingVector.erase(iter);
+          --iter;
+          is_quit = true;
+          bid = highestBid;
+          break;
+        }
+
+        size_t bid = stoul(input);
       }
 
-      if (bid <= highestBid) {
+      if (bid <= highestBid && !is_quit) {
         gameBoard->update(
             "Your bid must be higher than the current highest bid.");
         continue;
