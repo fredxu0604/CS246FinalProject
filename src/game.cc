@@ -327,6 +327,24 @@ void Game::runGameLoop() {
     if (numPlayers < 2)
       break;
 
+    if (currPlayer->getInfo().turnsStuck != 0) {
+      NonProperty *dcTims = findNonPropertyByName("DC TIMS LINE");
+      try {
+        dcTims->triggerEvent(currPlayer, squares, tc);
+        gameState = GameState::PostRoll;
+      } catch (InsufficientFunds &e) {
+        size_t before = players.size();
+        moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
+
+        if (players.size() == before) {
+          // the player did not go bankrupt!
+          currPlayer->makeUnstuck();
+          gameState = GameState::PreRoll;
+        }
+
+      }
+      
+    }
     Command cmd = gameBoard->readCommand();
 
     try {
@@ -426,6 +444,8 @@ void Game::runGameLoop() {
 
     } catch (Disallowed &e) {
       gameBoard->update(e.getMessage());
+    } catch (InsufficientFunds &e) {
+      moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
     }
     cout << "Please enter your command" << endl;
   }
@@ -632,13 +652,6 @@ void Game::next() {
 
 void Game::roll(int die1, int die2) {
 
-  if (currPlayer->getInfo().turnsStuck != 0) {
-    gameBoard->update(
-        "You are stuck at DC Tims and cannot move (you NEED coffee)!");
-    gameState = GameState::PostRoll;
-    return;
-  }
-
   int r1, r2;
 
   if (testing) {
@@ -822,7 +835,7 @@ void Game::buyOrAuctionLoop() {
       auctionLoop(
         findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
     }
-    gameBoard->update("Congratulations! You are now the owner of " +
+    gameBoard->update("Congratulations!" + currPlayer->getInfo().name + "is now the owner of " +
                       currPlayer->getInfo().currSquare->getInfo().name + ".");
   } else {
     auctionLoop(
