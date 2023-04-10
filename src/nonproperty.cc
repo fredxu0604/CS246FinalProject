@@ -199,7 +199,7 @@ void Tuition::triggerEvent(Player *p, std::vector<Square *> &squares,
     } else if (input == 2) {
       size_t totalAsset = p->getInfo().netWorth;
       p->makePayment(totalAsset);
-      std::cout << "You have chosen to pay 10%% of your total assets." << endl;
+      std::cout << "You have chosen to pay 10% of your total assets." << endl;
       break;
     } else {
       std::cout << "Invalid input. Please enter '1' or '2'." << endl;
