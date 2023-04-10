@@ -650,7 +650,7 @@ void Game::auctionLoop(Property *p) {
   gameBoard->update("Now we are bidding for the asset " + p->getInfo().name);
   while (biddingVector.size() > 0) {
     if (biddingVector.size() == 1) { // when there is only one player left
-      highestBidder->makePayment((size_t)highestBid);
+      highestBidder->makePayment(highestBid);
       highestBidder->addProperty(p);
     }
 
@@ -685,8 +685,8 @@ void Game::auctionLoop(Property *p) {
         continue;
       }
 
-      int bid = stoi(input);
-      if ((size_t)bid > currentPlayer->getInfo().balance) {
+      size_t bid = stoul(input);
+      if (bid > currentPlayer->getInfo().balance) {
         throw Disallowed{"You don't have enough money to make this bid."};
       }
 
