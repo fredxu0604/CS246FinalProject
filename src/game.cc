@@ -413,6 +413,7 @@ void Game::runGameLoop() {
 
       case CommandType::Trade:
         tradeLoop(cmd.args);
+        break;
 
       case CommandType::Unmortgage:
         try {
@@ -562,6 +563,7 @@ void Game::tradeLoop(const vector<std::string> &args) {
       tradeSwitch(args[0], args[1], args[2]);
       break;
     } else if (answer == "refuse") {
+      cout<< args[0] << " has refused your trade proposal."<<endl;
       break;
     } else {
       cout << "Invalid answer. Please enter 'accept' or 'refuse'." << std::endl;
