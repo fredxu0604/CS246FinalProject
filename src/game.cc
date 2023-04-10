@@ -427,6 +427,7 @@ void Game::runGameLoop() {
     } catch (Disallowed &e) {
       gameBoard->update(e.getMessage());
     }
+    cout<<"Please enter your command"<<endl;
   }
   stopGame();
 }
@@ -763,19 +764,18 @@ void Game::newGame() {
 }
 
 void Game::buyOrAuctionLoop() {
-  gameBoard->update(
-      "Would you like to buy " +
-      currPlayer->getInfo().currSquare->getInfo().name + " for $" +
-      to_string(currPlayer->getInfo().currSquare->getInfo().cost) + "? (y/n) ");
-  char choice;
-  cin >> choice;
+  cout<<"Would you like to buy " <<
+      currPlayer->getInfo().currSquare->getInfo().name << " for $" <<
+      to_string(currPlayer->getInfo().currSquare->getInfo().cost) << "? (y/n) "<<endl;
+  string choice;
+  getline(cin, choice);
 
-  while (choice != 'y' && choice != 'n') {
-    gameBoard->update("Invalid input. Please enter 'y' or 'n': ");
-    cin >> choice;
+  while (choice != "y" && choice != "n") {
+    cout<<"Invalid input. Please enter 'y' or 'n': "<<endl;
+    getline(cin, choice);
   }
 
-  if (choice == 'y') {
+  if (choice == "y") {
     currPlayer->buyProperty(
         findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
     gameBoard->update("Congratulations! You are now the owner of " +
