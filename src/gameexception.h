@@ -2,12 +2,18 @@
 #define __EXCEPTION_H__
 #include <string>
 
+class Player;
+
 class InsufficientFunds {
   std::string message;
+  size_t owedAmount;
+  Player *owedTo;
 
 public:
-  InsufficientFunds(std::string message = "");
+  InsufficientFunds(size_t amount, Player *owedTo, std::string message = "");
   std::string getMessage() const;
+  size_t getOwedAmount() const;
+  Player *getOwedTo() const;
 };
 
 class PropertyNotFound {
@@ -25,6 +31,5 @@ public:
   Disallowed(std::string message = "");
   std::string getMessage() const;
 };
-
 
 #endif

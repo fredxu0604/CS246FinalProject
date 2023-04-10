@@ -225,9 +225,10 @@ void Game::handleArrival() {
 
   try {
     if (npp != nullptr) {
-      
+
       Square *currSquare = currPlayerInfo.currSquare;
-      gameBoard->update("You are now at " + currSquare->getInfo().name + ".", false);
+      gameBoard->update("You are now at " + currSquare->getInfo().name + ".",
+                        false);
       npp->triggerEvent(currPlayer, squares, tc);
 
       if (currPlayer->getInfo().currSquare != currSquare) {
@@ -255,7 +256,7 @@ void Game::handleArrival() {
                           to_string(visitFee) + "!");
 
         if (!currPlayer->makePayment(visitFee))
-          throw InsufficientFunds{"Cannnot make rent!"};
+          throw InsufficientFunds{visitFee, pInfo.owner, "Cannnot make rent!"};
 
         pOwner->addFunds(visitFee);
         gameState = GameState::IdleTurn;
@@ -272,7 +273,7 @@ void Game::handleArrival() {
                      "nor nonproperty!"};
 
   } catch (InsufficientFunds e) {
-    moneyCriticalLoop();
+    moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
     gameState = GameState::MoneyCritical;
     return;
   }
@@ -323,14 +324,11 @@ void Game::runGameLoop() {
 
     try {
 
-
-
-
+      // ASDKJHASKJFHJKASJHDKJHASASDKJHKJASHD
 
     } catch (Disallowed e) {
 
       gameBoard->update(e.getMessage(), false);
-
     }
     stopGame();
   }
@@ -367,15 +365,79 @@ void Game::improve(string property, string mode) {
 }
 
 void Game::cannotUseThisCommand() {
-  gameBoard->update("Cannot use this command right now.", false);
+  gameBoard->update("Cannot use this command right now.");
 }
 
-void Game::moneyCriticalLoop() {
+void Game::tradeSwitch(string name, string give, string receive) {
+  stringstream ss1(give), ss2(receive);
+  size_t give_value, receive_value;
+
+  if ((ss1 >> give_value) && ss1.eof()) {
+    // The second parameter can be cast as a size_t
+    trade(name, give_value, receive);
+  } else if ((ss2 >> receive_value) && ss2.eof()) {
+    // The third parameter can be cast as a size_t
+    trade(name, give, receive_value);
+  } else {
+    // Neither parameter can be cast as a size_t
+    trade(name, give, receive);
+  }
+}
+
+void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
   gameBoard->update("You owe more money than you have!\n Mortgage properties "
                     "or trade with other players to raise money (or declare "
                     "bankruptcy if you're truly done for)",
                     false);
+  gameBoard->update(
+      "You need to raise your balance to $" + to_string(owes) + "!", false);
 
-  // ...
+  while (true) {
+    Command cmd = gameBoard->readCommand();
+
+    switch (cmd.type) {
+    case CommandType::Mortgage:
+      try {
+        currPlayer->mortgage(cmd.args[0]);
+        gameBoard->update("You have mortgaged " + cmd.args[0] + "!");
+      } catch (out_of_range) {
+        gameBoard->update("please provide a property name.");
+      } catch (Disallowed e) {
+        gameBoard->update(e.getMessage(), false);
+      }
+      break;
+
+    case CommandType::Trade:
+      try {
+        tradeLoop(cmd.args);
+      } catch (Disallowed e) {
+        gameBoard->update(e.getMessage());
+      }
+      break;
+
+    case CommandType::Bankrupt:
+      bankrupt(owedTo);
+      break;
+
+    default:
+      cannotUseThisCommand();
+      break;
+    }
+
+    if (currPlayer->getInfo().balance >= owes) {
+      gameBoard->update(
+          "You have raised enough money to pay off your debt! Good job!",
+          false);
+      currPlayer->makePayment(owes);
+
+      if (owedTo != nullptr)
+        owedTo->addFunds(owes);
+
+      return;
+    }
+
+    gameBoard->update("You need to raise more money! Still missing $" +
+                          to_string(owes - currPlayer->getInfo().balance) + ".",
+                      false);
+  }
 }
-
