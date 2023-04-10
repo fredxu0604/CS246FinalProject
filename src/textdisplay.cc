@@ -10,6 +10,8 @@
 #include <iostream>
 #include <sstream>
 
+TextDisplay::TextDisplay() {}
+
 void TextDisplay::print(std::ostream &out, const BoardInfo &board_info,
                         std::string message) {
 

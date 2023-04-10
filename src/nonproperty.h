@@ -26,7 +26,7 @@ const std::vector<std::string> allNonOwnableSquares{
 class NonProperty: public Square {
     public:
         NonProperty(std::string name);
-        virtual ~NonProperty() = 0;
+        virtual ~NonProperty();
         virtual void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) = 0;
         SquareInfo getInfo() const override;
 };

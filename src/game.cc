@@ -791,3 +791,45 @@ void Game::stopGame() {
     p = nullptr;
   }
 }
+
+void Game::bankrupt(Player *owedTo) {
+  return;
+
+  PlayerInfo pInfo = currPlayer->getInfo();
+
+  currPlayer->declareBankruptcy();
+
+  if (!owedTo) {
+    for (int i = 0; i < pInfo.timsCups; ++i) {
+      tc->freeOne();
+    }
+
+    for (auto p : pInfo.ownedProperties) {
+      p->setUnmortgaged();
+      auctionLoop(p);
+    }
+  } else {
+
+    for (int i = 0; i < pInfo.timsCups; ++i) {
+      owedTo->addTimsCup();
+    }
+
+    owedTo->addFunds(pInfo.balance);
+
+    for (auto p : pInfo.ownedProperties) {
+      currPlayer->removeProperty(p);
+      owedTo->addProperty(p);
+
+      SquareInfo propInfo = p->getInfo();
+
+      if (propInfo.isMortgaged) {
+        if (!owedTo->makePayment(propInfo.cost / 10)) {
+          
+        }
+      }
+
+
+    }
+
+  }
+}

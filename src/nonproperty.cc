@@ -66,6 +66,8 @@ void payBalanceOrCup(Player *p) {
 
 NonProperty::NonProperty(string name) : Square{name} {}
 
+NonProperty::~NonProperty() {}
+
 SquareInfo NonProperty::getInfo() const {
   return SquareInfo{name,
                     false,
@@ -116,7 +118,7 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
   if (p->getInfo().turnsStuck == 1) { // player must leave
     if (p->getInfo().balance < DCTimsLineFee && p->getInfo().timsCups == 0) {
       throw InsufficientFunds{
-          p->getInfo().balance - DCTimsLineFee, nullptr,
+          DCTimsLineFee, nullptr,
           "You don't have enough balance or Roll Up the Rim Cup!"};
     } else {
       payBalanceOrCup(p);
@@ -150,7 +152,7 @@ GoToTims::~GoToTims() {}
 
 void GoToTims::triggerEvent(Player *p, std::vector<Square *> &squares,
                             TimsCup *timsCups) {
-  int timsIndex = findIndexByName(squares, "DCTimsLine");
+  int timsIndex = findIndexByName(squares, "DC TIMS LINE");
   p->moveTo(squares[timsIndex]);
   p->makeStuck();
 }
@@ -181,7 +183,7 @@ void Tuition::triggerEvent(Player *p, std::vector<Square *> &squares,
                   << endl;
         break;
       } else {
-        throw InsufficientFunds{p->getInfo().balance - tuitionPayment, nullptr,
+        throw InsufficientFunds{tuitionPayment, nullptr,
                                 "You have insufficient funds!"};
       }
     } else if (input == 2) {
@@ -205,7 +207,7 @@ void CoopFee::triggerEvent(Player *p, std::vector<Square *> &squares,
     std::cout << "You have paid " << coopFee << " as Coop Fee. Cali or Busted!"
               << endl;
   } else {
-    throw InsufficientFunds{p->getInfo().balance - coopFee, nullptr,
+    throw InsufficientFunds{coopFee, nullptr,
                             "You have insufficient funds!"};
   }
 }
@@ -228,8 +230,8 @@ void SLC::triggerEvent(Player *p, std::vector<Square *> &squares,
   int index = p->findIndex(squares);
   int move;
   // find GotoTims and collectOSAP index
-  int timsIndex = findIndexByName(squares, "GoToTims");
-  int OSAPIndex = findIndexByName(squares, "collectOSAP");
+  int timsIndex = findIndexByName(squares, "GO TO TIMS");
+  int OSAPIndex = findIndexByName(squares, "COLLECT OSAP");
 
   // Generate a random number between 1 and 24
   int rand_num = rand() % 24 + 1;
@@ -303,7 +305,7 @@ void NeedlesHall::triggerEvent(Player *p, std::vector<Square *> &squares,
     if (p->makePayment(payment)) {
       cout << "You have paid " << payment << "." << endl;
     } else {
-      throw InsufficientFunds{p->getInfo().balance - payment, nullptr,
+      throw InsufficientFunds{payment, nullptr,
                               "You do not have enough fund"};
     }
   } else {

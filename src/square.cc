@@ -4,3 +4,4 @@ using namespace std;
 
 
 Square::Square(string name): name{name} {}
+Square::~Square() {}

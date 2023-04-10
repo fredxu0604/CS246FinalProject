@@ -21,18 +21,18 @@ int main(int argc, char **argv) {
       is_loading = true;
       loadName += argv[i + 1];
     }
-
-    // Initialize Game object with testing flag
-    Game game(is_testing);
-
-    if (is_loading) {
-      // Load game state from file
-      game.loadFromFile(loadName + ".txt");
-    } else {
-      // Start a new game
-      game.newGame();
-    }
-
-    return 0;
   }
+
+  // Initialize Game object with testing flag
+  Game game(is_testing);
+
+  if (is_loading) {
+    // Load game state from file
+    game.loadFromFile(loadName + ".txt");
+  } else {
+    // Start a new game
+    game.newGame();
+  }
+
+  return 0;
 }

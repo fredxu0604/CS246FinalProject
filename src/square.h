@@ -53,7 +53,7 @@ protected:
 
 public:
   Square(std::string name);
-  virtual ~Square() = 0;
+  virtual ~Square();
   virtual SquareInfo getInfo() const = 0;
 };
 
