@@ -269,7 +269,7 @@ void SLC::triggerEvent(Player *p, std::vector<Square *> &squares,
   // send the player to the new location
   int newIndex = (index + move + squares.size()) % squares.size();
   p->moveTo(squares[newIndex]);
-  std::cout << "You just moved " << newIndex << " and landed on "
+  std::cout << "You just moved "<< move << "and landed on "
             << squares[newIndex]->getInfo().name << "!" << endl;
   return;
 }
