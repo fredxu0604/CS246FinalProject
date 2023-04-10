@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/watopoly",
-            "args": ["-testing"],
+            "args": ["-testing -load f1"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

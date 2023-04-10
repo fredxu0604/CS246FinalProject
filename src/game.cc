@@ -716,6 +716,8 @@ void Game::newGame() {
   for (int i = 0; i < numPlayers; ++i) {
     string name;
 
+    cout << "Please enter a name for this player." << endl;
+    
     while (!(cin >> name)) {
       cout << "Please enter a name for this player." << endl;
     }
