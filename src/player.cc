@@ -310,3 +310,18 @@ int Player::findIndex(std::vector<Square *> &squares) {
   }
   return index;
 }
+
+Property *Player::validateMortgage(const string &propertyName) {
+  Property *theP = nullptr;
+  for (auto p : ownedProperties) {
+    if (p->getInfo().name == propertyName)
+      theP = p;
+  }
+
+  if (theP == nullptr) {
+    throw Disallowed{"You must own the property you are mortgaging."};
+  }
+
+  return theP;
+
+}
