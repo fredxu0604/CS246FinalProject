@@ -270,7 +270,7 @@ void Game::handleArrival() {
     throw Disallowed{"Somehow encountered a square that is neither property "
                      "nor nonproperty!"};
 
-  } catch (InsufficientFunds e) {
+  } catch (InsufficientFunds &e) {
     moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
     return;
   }
@@ -397,7 +397,7 @@ void Game::runGameLoop() {
         break;
       }
 
-    } catch (Disallowed e) {
+    } catch (Disallowed &e) {
 
       gameBoard->update(e.getMessage());
     }
@@ -486,7 +486,7 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
         gameBoard->update("You have mortgaged " + cmd.args[0] + "!");
       } catch (out_of_range) {
         gameBoard->update("please provide a property name.");
-      } catch (Disallowed e) {
+      } catch (Disallowed &e) {
         gameBoard->update(e.getMessage(), false);
       }
       break;
@@ -494,7 +494,7 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
     case CommandType::Trade:
       try {
         tradeLoop(cmd.args);
-      } catch (Disallowed e) {
+      } catch (Disallowed &e) {
         gameBoard->update(e.getMessage());
       }
       break;
