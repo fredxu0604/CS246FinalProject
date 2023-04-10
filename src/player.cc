@@ -103,7 +103,7 @@ void Player::buyImprovement(const string &propertyName) {
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
 
   if (targetPropertyInfo.improvementCost > balance) {
-    throw InsufficientFunds{
+    throw Disallowed{
         "You do not have enough money to purchase this improvement."};
   }
 
@@ -168,7 +168,7 @@ void Player::unmortgage(const string &propertyName) {
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
 
   if (targetPropertyInfo.unmortgageCost > balance)
-    throw InsufficientFunds{"Not enough money to unmortgage this property."};
+    throw Disallowed{"Not enough money to unmortgage this property."};
 
   try {
     targetProperty->setUnmortgaged();
@@ -219,7 +219,7 @@ void Player::buyProperty(Property *property) {
   SquareInfo propertyInfo = property->getInfo();
 
   if (propertyInfo.cost > balance)
-    throw InsufficientFunds{"not enough money to buy this property"};
+    throw Disallowed{"not enough money to buy this property"};
 
   makePayment(propertyInfo.cost);
   addProperty(property);
@@ -278,7 +278,7 @@ void Player::trade(Player *o, Property *give, size_t receive) {
     throw Disallowed{"You do not own the property you are trying to trade!"};
 
   if (!o->makePayment(receive))
-    throw InsufficientFunds{o->name + " has insufficient funds to make this trade."};
+    throw Disallowed{o->name + " has insufficient funds to make this trade."};
 
   addFunds(receive);
   removeProperty(give);

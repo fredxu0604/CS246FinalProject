@@ -6,7 +6,6 @@
 #include <string>
 #include "property.h"
 
-class Property;
 class NonProperty;
 class TimsCup;
 
@@ -32,7 +31,7 @@ class Game {
 
     
     void roll();
-    void next();
+    void next(); // implemented
 
     void createSquares(); // implemented
 
@@ -40,8 +39,11 @@ class Game {
     bool isIn(const map<std::string, PropertyType> &pNames, const std::string &targetName); // implemented
 
     int getSquareIdx(std::string squareName); // implemented
+    int getSquareIdx(Square *sp); // implemented
 
     Player *findPlayerByName(std::string name); // implemented
+
+    int getPlayerIdx(Player *p); // implemented
 
     Property *findPropertyByName(std::string propertyName); // implemented
     NonProperty *findNonPropertyByName(std::string nonPropertyName); // implemented
@@ -55,7 +57,7 @@ class Game {
 
     void tradeSwitch(std::string name, std::string give, std::string receive); // implemented
 
-    void tradeLoop(const std::vector<std::string> &args);
+    void tradeLoop(const std::vector<std::string> &args); // implemented
 
     void improve(std::string property, std::string mode); // implemented
     // void mortgage(std::string property);
@@ -65,11 +67,9 @@ class Game {
     void displayAll();
     void displayAssets();
 
-    void auctionLoop(Property *p);
-    void auctionBid(size_t amount);
-    void auctionWithdraw();
+    void auctionLoop(Property *p); // implemented
 
-    void useCup();
+    // void useCup();
 
     void cannotUseThisCommand(); // implemented
     void moneyCriticalLoop(size_t owes, Player *owedTo = nullptr); // implemented
@@ -85,8 +85,7 @@ class Game {
 
     
     void newGame();
-    bool execute(Command cmd);
-    void runGameLoop();
+    void runGameLoop(); // implemented
 
 };
 

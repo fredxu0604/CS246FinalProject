@@ -14,6 +14,7 @@
 #include "timscup.h"
 #include <exception>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -216,7 +217,6 @@ NonProperty *Game::findNonPropertyByName(string nonPropertyName) {
 }
 
 void Game::handleArrival() {
-  gameState = GameState::SquareArrival;
   PlayerInfo currPlayerInfo = currPlayer->getInfo();
   SquareInfo currSquareInfo = currPlayerInfo.currSquare->getInfo();
 
@@ -236,7 +236,7 @@ void Game::handleArrival() {
         return;
       }
 
-      gameState = GameState::IdleTurn;
+      gameState = GameState::PostRoll;
       return;
     }
 
@@ -259,7 +259,7 @@ void Game::handleArrival() {
           throw InsufficientFunds{visitFee, pInfo.owner, "Cannnot make rent!"};
 
         pOwner->addFunds(visitFee);
-        gameState = GameState::IdleTurn;
+        gameState = GameState::PostRoll;
         gameBoard->update("You have paid rent.", false);
         return;
 
@@ -274,7 +274,6 @@ void Game::handleArrival() {
 
   } catch (InsufficientFunds e) {
     moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
-    gameState = GameState::MoneyCritical;
     return;
   }
 }
@@ -324,11 +323,80 @@ void Game::runGameLoop() {
 
     try {
 
-      // ASDKJHASKJFHJKASJHDKJHASASDKJHKJASHD
+      switch (cmd.type) {
+
+      case CommandType::All:
+        displayAll();
+        break;
+
+      case CommandType::Assets:
+        displayAssets();
+        break;
+
+      case CommandType::Bankrupt:
+        cannotUseThisCommand();
+        break;
+
+      case CommandType::Improve:
+        try {
+          improve(cmd.args[0], cmd.args[1]);
+        } catch (out_of_range) {
+          gameBoard->update(
+              "Please provide the name of the desired property and whether you "
+              "want to buy or sell an improvement.");
+        }
+        break;
+
+      case CommandType::Mortgage:
+        try {
+
+          currPlayer->mortgage(cmd.args[0]);
+        } catch (out_of_range) {
+          gameBoard->update(
+              "Please provide the name of the property you want to mortgage.");
+        }
+        break;
+
+      case CommandType::Next:
+        if (gameState != GameState::PostRoll) {
+          cannotUseThisCommand();
+        } else {
+          next();
+        }
+        break;
+
+      case CommandType::Roll:
+        if (gameState != GameState::PreRoll) {
+          cannotUseThisCommand();
+        } else {
+          roll();
+        }
+        break;
+
+      case CommandType::Save:
+        try {
+          saveToFile(cmd.args[0]);
+        } catch (out_of_range) {
+          gameBoard->update("Please specify a file name.");
+        }
+        break;
+
+      case CommandType::Trade:
+        tradeLoop(cmd.args);
+
+      case CommandType::Unmortgage:
+        try {
+          currPlayer->unmortgage(cmd.args[0]);
+        } catch (out_of_range) {
+          gameBoard->update("Please provide the name of the property you want "
+                            "to unmortgage.");
+        }
+        break;
+      }
 
     } catch (Disallowed e) {
 
-      gameBoard->update(e.getMessage(), false);
+      gameBoard->update(e.getMessage());
     }
     stopGame();
   }
@@ -366,22 +434,6 @@ void Game::improve(string property, string mode) {
 
 void Game::cannotUseThisCommand() {
   gameBoard->update("Cannot use this command right now.");
-}
-
-void Game::tradeSwitch(string name, string give, string receive) {
-  stringstream ss1(give), ss2(receive);
-  size_t give_value, receive_value;
-
-  if ((ss1 >> give_value) && ss1.eof()) {
-    // The second parameter can be cast as a size_t
-    trade(name, give_value, receive);
-  } else if ((ss2 >> receive_value) && ss2.eof()) {
-    // The third parameter can be cast as a size_t
-    trade(name, give, receive_value);
-  } else {
-    // Neither parameter can be cast as a size_t
-    trade(name, give, receive);
-  }
 }
 
 void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
@@ -440,4 +492,95 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
                           to_string(owes - currPlayer->getInfo().balance) + ".",
                       false);
   }
+}
+
+void Game::tradeLoop(const vector<std::string> &args) {
+  std::string answer;
+  while (true) {
+    cout << "Do you accept the action? (accept/refuse): ";
+    getline(cin, answer);
+    if (answer == "accept") {
+      tradeSwitch(args[0], args[1], args[2]);
+      break;
+    } else if (answer == "refuse") {
+      break;
+    } else {
+      cout << "Invalid answer. Please enter 'accept' or 'refuse'." << std::endl;
+    }
+  }
+}
+
+void Game::tradeSwitch(string name, string give, string receive) {
+  stringstream ss1(give), ss2(receive);
+  size_t give_value, receive_value;
+
+  if ((ss1 >> give_value) && ss1.eof()) {
+    // The second parameter can be cast as a size_t
+    if (!findPropertyByName(receive)) {
+      throw Disallowed{"No property can be found for this receive."};
+    }
+    trade(name, give_value, receive);
+  } else if ((ss2 >> receive_value) && ss2.eof()) {
+    // The third parameter can be cast as a size_t
+    if (!findPropertyByName(give)) {
+      throw Disallowed{"No property can be found for this give."};
+    }
+    trade(name, give, receive_value);
+  } else {
+    if (!findPropertyByName(give) || !findPropertyByName(receive)) {
+      throw Disallowed{"No property can be found for this trade."};
+    }
+    // Neither parameter can be cast as a size_t
+    trade(name, give, receive);
+  }
+}
+
+int Game::getPlayerIdx(Player *p) {
+  for (int i = 0; i < players.size(); ++i) {
+    if (players[i] == p)
+      return i;
+  }
+  return -1;
+}
+
+void Game::next() {
+  gameState = GameState::PreRoll;
+  int cpIdx = getPlayerIdx(currPlayer);
+
+  currPlayer = players[(cpIdx + 1) % players.size()];
+
+  gameBoard->update("It is now " + currPlayer->getInfo().name + "'s turn.");
+}
+
+void Game::roll() {
+  int r1, r2;
+
+  if (testing) {
+    r1 = die1;
+    r2 = die2;
+  } else {
+    r1 = currPlayer->roll();
+    r2 = currPlayer->roll();
+  }
+
+  gameBoard->update("You rolled " + to_string(r1) + " and " + to_string(r2) +
+                    "!");
+  int totalMove = r1 + r2;
+
+  int currSquareIdx = getSquareIdx(currPlayer->getInfo().currSquare);
+
+  int newSquareIdx = (currSquareIdx + totalMove) % squares.size();
+
+  if (newSquareIdx < currSquareIdx) {
+    NonProperty *osap = nonProperties[0];
+    osap->triggerEvent(currPlayer, squares, tc);
+  }
+}
+
+int Game::getSquareIdx(Square *sp) {
+  for (int i = 0; i < squares.size(); ++i) {
+    if (squares[i] == sp)
+      return i;
+  }
+  return -1;
 }
