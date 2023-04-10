@@ -40,4 +40,6 @@ int main(int argc, char **argv) {
     game.saveToFile(loadName + ".txt");
 
     return 0;
+
+    }
 }
