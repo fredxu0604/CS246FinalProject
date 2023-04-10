@@ -337,7 +337,7 @@ void Game::runGameLoop() {
       case CommandType::Improve:
         try {
           improve(cmd.args[0], cmd.args[1]);
-        } catch (out_of_range) {
+        } catch (out_of_range &e) {
           gameBoard->update(
               "Please provide the name of the desired property and whether you "
               "want to buy or sell an improvement.");
@@ -348,7 +348,7 @@ void Game::runGameLoop() {
         try {
 
           currPlayer->mortgage(cmd.args[0]);
-        } catch (out_of_range) {
+        } catch (out_of_range &e) {
           gameBoard->update(
               "Please provide the name of the property you want to mortgage.");
         }
@@ -381,7 +381,7 @@ void Game::runGameLoop() {
 
               roll(d1, d2);
 
-            } catch (out_of_range) {
+            } catch (out_of_range &e) {
               gameBoard->update("Please provide valid die roll numbers "
                                 "(testing mode is enabled)");
             }
@@ -394,7 +394,7 @@ void Game::runGameLoop() {
       case CommandType::Save:
         try {
           saveToFile(cmd.args[0]);
-        } catch (out_of_range) {
+        } catch (out_of_range &e) {
           gameBoard->update("Please specify a file name.");
         }
         break;
@@ -405,7 +405,7 @@ void Game::runGameLoop() {
       case CommandType::Unmortgage:
         try {
           currPlayer->unmortgage(cmd.args[0]);
-        } catch (out_of_range) {
+        } catch (out_of_range &e) {
           gameBoard->update("Please provide the name of the property you want "
                             "to unmortgage.");
         }
@@ -499,7 +499,7 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
       try {
         currPlayer->mortgage(cmd.args[0]);
         gameBoard->update("You have mortgaged " + cmd.args[0] + "!");
-      } catch (out_of_range) {
+      } catch (out_of_range &e) {
         gameBoard->update("please provide a property name.");
       } catch (Disallowed &e) {
         gameBoard->update(e.getMessage(), false);
