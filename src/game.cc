@@ -67,7 +67,7 @@ void Game::loadFromFile(string fileName) {
     }
 
     players.emplace_back(new Player{name, avatar, squares[position],
-                                    vector<Property *>{}, money, money == -1,
+                                    vector<Property *>{}, money, money == 0,
                                     turnsStuck, timsCups});
     timsCupsInUse += timsCups;
   }
@@ -279,7 +279,7 @@ void Game::saveToFile(string fileName) {
     // Write each player's data to the file
     for (auto player : players) {
       file << player->getInfo().name << " " << player->getInfo().avatar << " "
-           << player->getInfo().timsCups << " " << player->getInfo().balance
+           << player->getInfo().timsCups << " " << (player->getInfo().isBankrupt ? 0 : player->getInfo().balance)
            << " "
            << this->getSquareIdx(player->getInfo().currSquare->getInfo().name);
       if (this->getSquareIdx(player->getInfo().currSquare->getInfo().name) ==
