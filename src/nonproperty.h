@@ -14,7 +14,7 @@ const size_t DCTimsLineFee = 50;
 
 const std::vector<std::string> allNonOwnableSquares{
     "COLLECT OSAP",
-    "DC Tims Line",
+    "DC TIMS LINE",
     "GO TO TIMS",
     "GOOSE NESTING",
     "TUITION",
