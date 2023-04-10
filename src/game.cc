@@ -794,8 +794,13 @@ void Game::buyOrAuctionLoop() {
   }
 
   if (choice == "y") {
-    currPlayer->buyProperty(
+    try{
+      currPlayer->buyProperty(findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+    } catch (Disallowed &e){
+      cout << "You don't have enough money to buy property. This property must be auctioned."<< endl;
+      auctionLoop(
         findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+    }
     gameBoard->update("Congratulations! You are now the owner of " +
                       currPlayer->getInfo().currSquare->getInfo().name + ".");
   } else {
