@@ -837,7 +837,7 @@ void Game::buyOrAuctionLoop() {
       auctionLoop(
         findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
     }
-    gameBoard->update("Congratulations!" + currPlayer->getInfo().name + "is now the owner of " +
+    gameBoard->update("Congratulations! " + currPlayer->getInfo().name + " is now the owner of " +
                       currPlayer->getInfo().currSquare->getInfo().name + ".");
   } else {
     auctionLoop(

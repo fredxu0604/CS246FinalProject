@@ -112,11 +112,13 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
     cout<< "Nothing happens"<<endl;
     return;
   }
+
+  cout << "You are currently stuck in the DC Tims Line!\n" << endl;
   // if it's a double roll
   if (move1 == move2) { // double roll, player got released
     p->moveTo(squares[newIndex]);
     p->makeUnstuck();
-    cout<< "Congrats you are out of here by rolling double"<<endl;
+    cout << "You rolled " << move1 << "and " << move2 << ". Congrats you are out of here by rolling double" << endl;
     return;
   }
   // if it's the third time play stuck here
