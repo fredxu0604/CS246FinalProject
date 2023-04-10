@@ -114,7 +114,6 @@ void Game::loadFromFile(string fileName) {
   currPlayer = players[0];
   gameBoard = new Board{squares, players, currPlayer, new TextDisplay{}};
   initialized = true;
-  gameBoard->update();
   runGameLoop();
 }
 
@@ -322,6 +321,7 @@ void Game::runGameLoop() {
     cout << "Game is not initialized." << endl;
     return;
   }
+  gameBoard->update("Game Start! Please enter your command:");
   gameState = GameState::PreRoll;
 
   while (true) {
@@ -425,11 +425,10 @@ void Game::runGameLoop() {
       }
 
     } catch (Disallowed &e) {
-
       gameBoard->update(e.getMessage());
     }
-    stopGame();
   }
+  stopGame();
 }
 
 // trade property with property
@@ -683,10 +682,9 @@ void Game::auctionLoop(Property *p) {
           continue;
         }
       }
-      gameBoard->update("The current highest bid is " + to_string(highestBid) +
-                        ".");
-      gameBoard->update("How much do you want to bid? (Type 'quit' to withdraw "
-                        "from the auction)");
+      cout<<"The current highest bid is " << highestBid << "."<< endl;
+      cout<<"How much do you want to bid? (Type 'quit' to withdraw "
+                        "from the auction)"<<endl;
 
       string input;
       getline(std::cin, input);
@@ -761,7 +759,6 @@ void Game::newGame() {
   tc = new TimsCup{};
   gameState = GameState::PreRoll;
   initialized = true;
-  gameBoard->update();
   runGameLoop();
 }
 
