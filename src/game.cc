@@ -764,13 +764,17 @@ void Game::buyOrAuctionLoop() {
 
 void Game::stopGame() {
   delete gameBoard;
+  gameBoard = nullptr;
   delete tc;
+  tc = nullptr;
 
   for (auto p : squares) {
     delete p;
+    p = nullptr;
   }
 
   for (auto p : players) {
     delete p;
+     p = nullptr;
   }
 }
