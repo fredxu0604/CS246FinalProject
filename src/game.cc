@@ -280,8 +280,8 @@ void Game::handleArrival() {
 }
 
 void Game::saveToFile(string fileName) {
-  std::ofstream file(
-      fileName + ".txt"); // Create or overwrite the file with the given name
+  std::ofstream file; // Create or overwrite the file with the given name
+  file.open(fileName + ".txt", std::ofstream::out | std::ofstream::trunc);
   if (file.is_open()) {
     // Write the number of players to the file
     file << numPlayers << endl;
@@ -306,7 +306,7 @@ void Game::saveToFile(string fileName) {
     for (auto property : properties) {
       file << property->getInfo().name << " ";
       if (property->getInfo().isOwned) {
-        file << property->getInfo().owner << " ";
+        file << property->getInfo().owner->getInfo().name << " ";
       } else {
         file << "BANK ";
       }
