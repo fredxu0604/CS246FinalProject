@@ -15,6 +15,7 @@
 #include <exception>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -149,9 +150,11 @@ void Game::createSquares() {
       switch (sType) {
       case PropertyType::Gym:
         pp = new Gym{sName};
+        break;
 
       case PropertyType::Residence:
         pp = new Residence{sName};
+        break;
 
       case PropertyType::Acedemic:
         break;
@@ -226,7 +229,7 @@ void Game::handleArrival() {
       npp->triggerEvent(currPlayer, squares, tc);
 
       if (currPlayer->getInfo().currSquare != currSquare) {
-        gameState = GameState::JustRolled;
+        gameState = GameState::JustLanded;
         return;
       }
 
@@ -247,7 +250,6 @@ void Game::handleArrival() {
         gameBoard->update("This property is owned by " +
                           pOwner->getInfo().name + "\nYou must pay $" +
                           to_string(visitFee) + "!");
-        
 
         if (!currPlayer->makePayment(visitFee))
           throw InsufficientFunds{"Cannnot make rent!"};
@@ -256,16 +258,17 @@ void Game::handleArrival() {
         gameState = GameState::IdleTurn;
         return;
 
-
       } else {
         gameState = GameState::ChoiceBuyProperty;
         return;
       }
     }
 
-    throw Disallowed{"Somehow encountered a square that is neither property nor nonproperty!"};
+    throw Disallowed{"Somehow encountered a square that is neither property "
+                     "nor nonproperty!"};
 
   } catch (InsufficientFunds e) {
+    warnMoneyCritical();
     gameState = GameState::MoneyCritical;
     return;
   }
@@ -312,66 +315,108 @@ void Game::runGameLoop() {
     if (numPlayers < 2)
       break;
 
-    switch (gameState) {
-      case GameState::PreRoll:
-        Command cmd = gameBoard->readCommand();
-        PlayerInfo pInfo = currPlayer->getInfo();
-        SquareInfo sInfo = pInfo.currSquare->getInfo();
+    Command cmd = gameBoard->readCommand();
 
-        switch (cmd.type) {
-          case CommandType::All:
-            displayAll();
+    try {
 
-          case CommandType::Assets:
-            displayAssets();
 
-          case CommandType::AuctionBid:
-            gameBoard->update("Not currently in an auction.");
+      switch (cmd.type) {
 
-          case CommandType::AuctionWithdraw:
-            gameBoard->update("Not currently in an auction.");
-
-          case CommandType::Bankrupt:
-            gameBoard->update("Cannot declare bankruptcy right now.");
-
-          case CommandType::Improve:
-            try {
-              improve(sInfo.name, cmd.args[0]);
-            } catch (Disallowed e) {
-              gameBoard->update(e.getMessage());
-            }
-
-          case CommandType::Mortgage:
-            try {
-              mortgage(sInfo.name);
-            } catch (Disallowed e) {
-              gameBoard->update(e.getMessage());
-            }
-
-          
+      case CommandType::All:
+        if (gameState == GameState::ChoiceTuition) {
+          cannotUseThisCommand();
+          break;
         }
+        displayAll();
+        break;
+
+      case CommandType::Assets:
+        if (gameState == GameState::ChoiceTuition) {
+            cannotUseThisCommand();
+            break;
+          }
+        displayAssets();
+        break;
+
+      case CommandType::AuctionBid:
+        cannotUseThisCommand();
+        break;
+
+      case CommandType::AuctionWithdraw:
+        cannotUseThisCommand();
+        break;
+
+      case CommandType::Bankrupt:
+        if (gameState != GameState::MoneyCritical) {
+          cannotUseThisCommand();
+          break;
+        }
+        bankrupt();
+        break;
+
+      case CommandType::Improve:
+        if (gameState == GameState::MoneyCritical ||
+            gameState == GameState::ChoiceBuyProperty) {
+              cannotUseThisCommand();
+              break;
+            }
+
+        try {
+          improve(cmd.args[0], cmd.args[1]);
+        } catch (out_of_range) {
+          gameBoard->update("not enough arguments", false);
+        }
+      }
+
+
+
+    } catch (Disallowed e) {
+
+      gameBoard->update(e.getMessage(), false);
+
     }
-
+    stopGame();
   }
-  stopGame();
 }
-
-
 
 // trade property with property
 void Game::trade(std::string name, std::string give, std::string receive) {
-  Player * otherPlayer = findPlayerByName(name);
-  currPlayer->trade(otherPlayer,findPropertyByName(give), findPropertyByName(receive));
+  Player *otherPlayer = findPlayerByName(name);
+  currPlayer->trade(otherPlayer, findPropertyByName(give),
+                    findPropertyByName(receive));
 }
 
 // trade property with balance
 void Game::trade(std::string name, size_t give, std::string receive) {
-  Player * otherPlayer = findPlayerByName(name);
+  Player *otherPlayer = findPlayerByName(name);
   currPlayer->trade(otherPlayer, give, findPropertyByName(receive));
 }
 
 // trade balance with property
 void Game::trade(std::string name, std::string give, size_t receive) {
-  Player * otherPlayer = findPlayerByName(name);
+  Player *otherPlayer = findPlayerByName(name);
   currPlayer->trade(otherPlayer, findPropertyByName(give), receive);
 }
+
+void Game::improve(string property, string mode) {
+  if (mode == "buy") {
+    currPlayer->buyImprovement(property);
+    return;
+  }
+  if (mode == "sell") {
+    currPlayer->sellImprovement(property);
+    return;
+  }
+}
+
+void Game::cannotUseThisCommand() {
+  gameBoard->update("Cannot use this command right now.", false);
+}
+
+void Game::warnMoneyCritical() {
+  gameBoard->update("You owe more money than you have!\n Mortgage properties "
+                    "or trade with other players to raise money (or declare "
+                    "bankruptcy if you're truly done for)",
+                    false);
+}
+

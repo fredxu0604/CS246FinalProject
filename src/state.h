@@ -3,10 +3,11 @@
 
 enum class GameState {
   PreRoll,
-  JustRolled,
+  JustLanded,
   OnTheMove,
   SquareArrival,
   ChoiceBuyProperty,
+  ChoiceTuition,
   IdleTurn,
   Auction,
   Trade,

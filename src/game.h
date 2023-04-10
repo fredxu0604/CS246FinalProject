@@ -56,8 +56,8 @@ class Game {
     void tradeSwitch(std::string name, std::string give, std::string receive);
 
     void improve(std::string property, std::string mode); // implemented
-    void mortgage(std::string property);
-    void unmortgage(std::string property);
+    // void mortgage(std::string property);
+    // void unmortgage(std::string property);
     void bankrupt();
 
     void displayAll();
@@ -69,7 +69,7 @@ class Game {
 
     void useCup();
 
-    void cannotUseThisCommand();
+    void cannotUseThisCommand(); // implemented
     void warnMoneyCritical();
     void stopGame();
 
