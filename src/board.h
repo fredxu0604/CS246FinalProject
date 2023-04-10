@@ -4,7 +4,6 @@
 #include "command.h"
 #include "square.h"
 #include "squareinfo.h"
-#include "observer.h"
 
 class Player;
 class TextDisplay;
