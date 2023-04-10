@@ -41,7 +41,7 @@ SquareInfo Acedemic::getInfo() const {
     isOwned = false;
   }
   size_t purchaseCost = purchaseCostMap.at(name);
-  size_t improveCost = improvementCostMap.at(name);
+  size_t improveCost = improvementCostMap.at(group);
   size_t mortgageLoan = purchaseCost / 2;
   size_t unmortgageCost = (purchaseCost * 6 / 10) + unmortgageFeeAddon;
   size_t improveRefund = improveCost / 2;

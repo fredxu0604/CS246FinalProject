@@ -57,9 +57,9 @@ const map<string, size_t> purchaseCostMap = {
     {"MC", 350},  {"DC", 400},  {"CIF", 150}, {"PAC", 150}, {"MKV", 200},
     {"UWP", 200}, {"V1", 200},  {"REV", 200}};
 
-const map<string, size_t> improvementCostMap = {
-    {"Arts1", 50}, {"Arts2", 50}, {"Eng", 100},  {"Health", 100},
-    {"Env", 150},  {"Sci1", 150}, {"Sci2", 200}, {"Math", 200}};
+const map<Group, size_t> improvementCostMap = {
+    {Group::Arts1, 50}, {Group::Arts2, 50}, {Group::Eng, 100},  {Group::Health, 100},
+    {Group::Env, 150},  {Group::Sci1, 150}, {Group::Sci2, 200}, {Group::Math, 200}};
 
 const map<string, map<size_t, size_t>> tuitionCostMap = {
     {"AL", {{0, 2}, {1, 10}, {2, 30}, {3, 90}, {4, 160}, {5, 250}}},
