@@ -12,7 +12,7 @@ const size_t coopFee = 150;
 const size_t OSAPFee = 200;
 const size_t DCTimsLineFee = 50;
 
-const vector<std::string> allNonOwnableSquares{
+const std::vector<std::string> allNonOwnableSquares{
     "COLLECT OSAP",
     "DC Tims Line",
     "GO TO TIMS",
@@ -25,7 +25,7 @@ const vector<std::string> allNonOwnableSquares{
 
 class NonProperty: public Square {
     public:
-        NonProperty(string name);
+        NonProperty(std::string name);
         virtual ~NonProperty() = 0;
         virtual void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) = 0;
         SquareInfo getInfo() const override;
@@ -34,56 +34,56 @@ class NonProperty: public Square {
 
 class CollectOSAP: public NonProperty {
     public:
-        CollectOSAP(string name);
+        CollectOSAP(std::string name);
         ~CollectOSAP() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class DCTimsLine: public NonProperty {
     public:
-        DCTimsLine(string name);
+        DCTimsLine(std::string name);
         ~DCTimsLine() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class GoToTims: public NonProperty {
     public:
-        GoToTims(string name);
+        GoToTims(std::string name);
         ~GoToTims() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class GooseNesting: public NonProperty {
     public:
-        GooseNesting(string name);
+        GooseNesting(std::string name);
         ~GooseNesting() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class Tuition: public NonProperty {
     public:
-        Tuition(string name);
+        Tuition(std::string name);
         ~Tuition() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class CoopFee: public NonProperty {
     public:
-        CoopFee(string name);
+        CoopFee(std::string name);
         ~CoopFee() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };
 
 class SLC: public NonProperty {
     public:
-        SLC(string name);
+        SLC(std::string name);
         ~SLC() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup* timsCups) override;
 };
 
 class NeedlesHall: public NonProperty {
     public:
-        NeedlesHall(string name);
+        NeedlesHall(std::string name);
         ~NeedlesHall() override;
         void triggerEvent(Player *p, std::vector<Square *> &squares, TimsCup *timsCups) override;
 };

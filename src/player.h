@@ -18,7 +18,6 @@ class Player {
   int turnsStuck;
   int timsCups;
 
-  
   bool hasMonopoly(const std::string &propertyName);
   bool isStuck();
   Property *validateImprovement(const std::string &propertyName);
@@ -26,8 +25,8 @@ class Player {
 
 public:
   Player(const std::string &name, char avatar, Square *currSquare,
-         std::vector<Property *> ownedProperties, size_t balance = 0, bool 
-         isBankrupt = false, int turnsStuck = 0, int timsCups = 0);
+         std::vector<Property *> ownedProperties, size_t balance = 0,
+         bool isBankrupt = false, int turnsStuck = 0, int timsCups = 0);
 
   PlayerInfo getInfo() const;
 
@@ -45,9 +44,9 @@ public:
   void unmortgage(const std::string &propertyName); // similar to above
 
   bool makePayment(size_t amount); // Returns true if the player has
-                                         // enough money to make the payment
-                                         //   The player can declare bankruptcy
-                                         //   if this returns false
+                                   // enough money to make the payment
+                                   //   The player can declare bankruptcy
+                                   //   if this returns false
 
   void moveTo(Square *newLocation); // moves the player to a new square
 
@@ -77,8 +76,8 @@ public:
 
   void useTimsCup();
 
-  int findIndex(std::vector<Square *> &squares); // find the index of current square in vector of squares
-
+  int findIndex(std::vector<Square *> &squares); // find the index of current
+                                                 // square in vector of squares
 };
 
 #endif

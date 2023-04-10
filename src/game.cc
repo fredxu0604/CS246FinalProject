@@ -1,15 +1,11 @@
 #include "game.h"
 #include "acedemic.h"
-#include "board.h"
-#include "command.h"
 #include "gameexception.h"
 #include "gym.h"
 #include "nonproperty.h"
 #include "player.h"
-#include "property.h"
 #include "residence.h"
 #include "square.h"
-#include "state.h"
 #include "textdisplay.h"
 #include "timscup.h"
 #include <exception>
@@ -17,7 +13,6 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 
 using namespace std;
 

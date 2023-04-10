@@ -1,6 +1,5 @@
 #include "gym.h"
 #include "player.h"
-#include <string>
 #include "gameexception.h"
 
 Gym::Gym(string name): Property{name} {}
@@ -28,8 +27,10 @@ size_t Gym::getVisitFee() const {
         }
         if (gymOwned == 1) {
             size_t fee = (size_t)(owner->roll() + owner->roll()) * 4;
+            return fee;
         } else {
             size_t fee = (size_t)(owner->roll() + owner->roll()) * 10;
+            return fee;
         }
     }
 }

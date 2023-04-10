@@ -22,11 +22,11 @@ bool Player::owns(Property *p) const {
 }
 
 Player::Player(const string &name, char avatar, Square *currSquare,
-               vector<Property *> ownedProperties, size_t balance, 
+               vector<Property *> ownedProperties, size_t balance,
                bool isBankrupt, int turnsStuck, int timsCups)
     : name{name}, avatar{avatar}, balance{balance}, assets{0},
-      currSquare{currSquare}, ownedProperties{ownedProperties}, isBankrupt{isBankrupt}, 
-      turnsStuck{turnsStuck}, timsCups{timsCups} {
+      currSquare{currSquare}, ownedProperties{ownedProperties},
+      isBankrupt{isBankrupt}, turnsStuck{turnsStuck}, timsCups{timsCups} {
 
   for (auto property : ownedProperties) {
     SquareInfo pInfo = property->getInfo();
@@ -227,16 +227,13 @@ void Player::buyProperty(Property *property) {
 
 PlayerInfo Player::getInfo() const {
   return PlayerInfo{
-      name, avatar,balance, balance + assets, ownedProperties, currSquare, isBankrupt, turnsStuck, timsCups};
+      name,       avatar,     balance,    balance + assets, ownedProperties,
+      currSquare, isBankrupt, turnsStuck, timsCups};
 }
 
-void Player::makeStuck() {
-  turnsStuck = 3;
-}
+void Player::makeStuck() { turnsStuck = 3; }
 
-void Player::makeUnstuck() {
-  turnsStuck = 0;
-}
+void Player::makeUnstuck() { turnsStuck = 0; }
 
 void Player::passTurnStuck() {
   if (turnsStuck == 1)
@@ -245,10 +242,7 @@ void Player::passTurnStuck() {
   --turnsStuck;
 }
 
-int Player::roll() {
-  return (rand() % 6) + 1;
-}
-
+int Player::roll() { return (rand() % 6) + 1; }
 
 void Player::trade(Player *o, Property *give, Property *receive) {
   if (!owns(give) || !o->owns(receive))
@@ -270,7 +264,6 @@ void Player::trade(Player *o, size_t give, Property *receive) {
   o->addFunds(give);
   o->removeProperty(receive);
   addProperty(receive);
-
 }
 
 void Player::trade(Player *o, Property *give, size_t receive) {
@@ -285,9 +278,7 @@ void Player::trade(Player *o, Property *give, size_t receive) {
   o->addProperty(give);
 }
 
-void Player::addTimsCup() {
-  ++timsCups;
-}
+void Player::addTimsCup() { ++timsCups; }
 
 void Player::useTimsCup() {
   if (timsCups == 0)
@@ -304,8 +295,8 @@ int Player::findIndex(std::vector<Square *> &squares) {
   int index = -1;
   for (int i = 0; i < squares.size(); i++) {
     if (squares[i] == currSquare) {
-        index = i;
-        break;
+      index = i;
+      break;
     }
   }
   return index;
@@ -323,5 +314,4 @@ Property *Player::validateMortgage(const string &propertyName) {
   }
 
   return theP;
-
 }
