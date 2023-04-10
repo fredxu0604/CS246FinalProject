@@ -182,7 +182,7 @@ void Tuition::triggerEvent(Player *p, std::vector<Square *> &squares,
   size_t input = 0;
   while (true) {
     std::cout << "Enter '1' to pay $" << tuitionPayment
-              << " or '2' to pay 10%% of your total asset: ";
+              << " or '2' to pay 10% of your total asset: ";
     string inStr;
     getline(cin, inStr);
     istringstream iss{inStr};
