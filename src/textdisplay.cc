@@ -41,12 +41,16 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info,
   for (const auto &player : board_info.players) {
     auto playerInfo = player->getInfo();
     out << playerInfo.name << " (balance: $" << playerInfo.balance << ")"
+        << "(current location " << playerInfo.currSquare->getInfo().name << ")"  
         << std::endl;
   }
 
   // Print the current player
   auto currPlayerInfo = board_info.currPlayer->getInfo();
-  out << "Current player: " << currPlayerInfo.name << std::endl;
+  out << "Current player: " << currPlayerInfo.name
+                            << " (On " << currPlayerInfo.currSquare->getInfo().name
+                            << ")"
+                            << std::endl;
 
   // Print the message, if provided
   if (!message.empty()) {
