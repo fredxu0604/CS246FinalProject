@@ -334,11 +334,13 @@ void Game::runGameLoop() {
         gameState = GameState::PostRoll;
       } catch (InsufficientFunds &e) {
         size_t before = players.size();
+        gameBoard->update(e.getMessage(), false);
         moneyCriticalLoop(e.getOwedAmount(), e.getOwedTo());
 
         if (players.size() == before) {
           // the player did not go bankrupt!
           currPlayer->makeUnstuck();
+          gameBoard->update("Congrats! You are no longer stuck. Feel free to leave by rolling.");
           gameState = GameState::PreRoll;
         }
 
