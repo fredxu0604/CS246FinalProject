@@ -1,6 +1,32 @@
-2
+3
 player1 B 0 3000 2
 player2 G 1 2500 1
-AL player1 0
-ML player2 0
-DC player2 0
+player3 $ 0 2 10 1 3
+AL player1 1
+ML player1 1
+MKV BANK 0
+ECH player2 0
+PAS BANK 0
+HH BANK 0
+RCH player1 0
+PAC BANK 0
+DWE player1 0
+CPH player1 0
+UWP BANK 0
+LHI BANK 0
+BMH BANK 0
+OPT BANK 0
+EV1 player1 0
+EV2 player2 0
+EV3 BANK 0
+V1 BANK 0
+PHYS BANK 0
+B1 BANK 0
+CIF BANK 0
+B2 BANK 0
+EIT player3 0
+ESC BANK 0
+C2 BANK 0
+REV BANK 0
+MC BANK 0
+DC BANK 0
