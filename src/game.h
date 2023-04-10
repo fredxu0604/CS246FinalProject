@@ -15,8 +15,6 @@ class Game {
     int numProperties;
     bool initialized;
     bool testing;
-    int die1;
-    int die2;
     Board *gameBoard;
     Player *currPlayer;
     GameState gameState;
@@ -29,7 +27,7 @@ class Game {
     std::vector<Player *> players;
 
     
-    void roll(); // implemented
+    void roll(int die1 = 0, int die2 = 0); // implemented
     void next(); // implemented
 
     void createSquares(); // implemented
@@ -77,7 +75,7 @@ class Game {
     void buyOrAuctionLoop(); // implemented
 
     public:
-    Game(bool testing = false, int die1 = 0, int die2 = 0); // implemented
+    Game(bool testing = false); // implemented
 
     void loadFromFile(std::string fileName); // implemented
     void saveToFile(std::string fileName); // implemented
