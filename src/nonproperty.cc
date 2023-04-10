@@ -5,6 +5,7 @@
 #include "property.h"
 #include <cstdlib>
 #include <ctime>
+#include <sstream>
 using namespace std;
 
 class Player;
@@ -43,7 +44,10 @@ void payBalanceOrCup(Player *p) {
     while (true) {
       std::cout << "Enter '1' to pay $" << DCTimsLineFee
                 << " or '2' to use Roll Up the Rim Cup";
-      cin >> input;
+      string inStr;
+      getline(cin, inStr);
+      istringstream iss{inStr};
+      iss >> input;
       if (input == 1) {
         p->makePayment(DCTimsLineFee);
         p->makeUnstuck();
@@ -129,7 +133,10 @@ void DCTimsLine::triggerEvent(Player *p, std::vector<Square *> &squares,
     while (true) {
       int input;
       std::cout << "Enter '1' to wait or '2' to use balance or cup";
-      cin >> input;
+      string inStr;
+      getline(cin, inStr);
+      istringstream iss{inStr};
+      iss >> input;
       if (input == 1) {
         std::cout << "You just choose to wait." << endl;
         p->passTurnStuck();
@@ -176,7 +183,10 @@ void Tuition::triggerEvent(Player *p, std::vector<Square *> &squares,
   while (true) {
     std::cout << "Enter '1' to pay $" << tuitionPayment
               << " or '2' to pay 10%% of your total asset: ";
-    cin >> input;
+    string inStr;
+    getline(cin, inStr);
+    istringstream iss{inStr};
+    iss >> input;
     if (input == 1) {
       if (p->makePayment(tuitionPayment)) {
         std::cout << "You have chosen to pay $" << tuitionPayment << "."

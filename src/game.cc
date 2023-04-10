@@ -91,7 +91,6 @@ void Game::loadFromFile(string fileName) {
 
     Player *owner = nullptr;
 
- 
     // if (ownerName == "BANK") {
     //   owner = nullptr;
     // } else {
@@ -348,7 +347,7 @@ void Game::runGameLoop() {
 
       case CommandType::Improve:
         try {
-          improve(cmd.args[0], cmd.args[1]);
+          improve(cmd.args.at(0), cmd.args.at(1));
         } catch (out_of_range &e) {
           gameBoard->update(
               "Please provide the name of the desired property and whether you "
@@ -359,7 +358,7 @@ void Game::runGameLoop() {
       case CommandType::Mortgage:
         try {
 
-          currPlayer->mortgage(cmd.args[0]);
+          currPlayer->mortgage(cmd.args.at(0));
         } catch (out_of_range &e) {
           gameBoard->update(
               "Please provide the name of the property you want to mortgage.");
@@ -381,8 +380,8 @@ void Game::runGameLoop() {
           if (testing) {
             try {
               int d1, d2;
-              istringstream arg1Stream{cmd.args[0]};
-              istringstream arg2Stream{cmd.args[1]};
+              istringstream arg1Stream{cmd.args.at(0)};
+              istringstream arg2Stream{cmd.args.at(1)};
 
               if (!(arg1Stream >> d1)) {
                 throw Disallowed{"Invalid number"};
@@ -405,7 +404,7 @@ void Game::runGameLoop() {
 
       case CommandType::Save:
         try {
-          saveToFile(cmd.args[0]);
+          saveToFile(cmd.args.at(0));
         } catch (out_of_range &e) {
           gameBoard->update("Please specify a file name.");
         }
@@ -417,7 +416,7 @@ void Game::runGameLoop() {
 
       case CommandType::Unmortgage:
         try {
-          currPlayer->unmortgage(cmd.args[0]);
+          currPlayer->unmortgage(cmd.args.at(0));
         } catch (out_of_range &e) {
           gameBoard->update("Please provide the name of the property you want "
                             "to unmortgage.");
@@ -428,7 +427,7 @@ void Game::runGameLoop() {
     } catch (Disallowed &e) {
       gameBoard->update(e.getMessage());
     }
-    cout<<"Please enter your command"<<endl;
+    cout << "Please enter your command" << endl;
   }
   stopGame();
 }
@@ -510,8 +509,8 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
     switch (cmd.type) {
     case CommandType::Mortgage:
       try {
-        currPlayer->mortgage(cmd.args[0]);
-        gameBoard->update("You have mortgaged " + cmd.args[0] + "!");
+        currPlayer->mortgage(cmd.args.at(0));
+        gameBoard->update("You have mortgaged " + cmd.args.at(0) + "!");
       } catch (out_of_range &e) {
         gameBoard->update("please provide a property name.");
       } catch (Disallowed &e) {
@@ -557,16 +556,34 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
 void Game::tradeLoop(const vector<std::string> &args) {
   std::string answer;
   while (true) {
-    cout << "Do you accept the action? (accept/refuse): ";
-    getline(cin, answer);
-    if (answer == "accept") {
-      tradeSwitch(args[0], args[1], args[2]);
-      break;
-    } else if (answer == "refuse") {
-      cout<< args[0] << " has refused your trade proposal."<<endl;
-      break;
-    } else {
-      cout << "Invalid answer. Please enter 'accept' or 'refuse'." << std::endl;
+    try {
+      cout << "Do you accept the action? (accept/refuse): ";
+      getline(cin, answer);
+      if (answer == "accept") {
+        tradeSwitch(args.at(0), args.at(1), args.at(2));
+        break;
+      } else if (answer == "refuse") {
+        cout << args.at(0) << " has refused your trade proposal." << endl;
+        break;
+      } else {
+        cout << "Invalid answer. Please enter 'accept' or 'refuse'."
+             << std::endl;
+      }
+      cout << "Do you accept the action? (accept/refuse): ";
+      getline(cin, answer);
+      if (answer == "accept") {
+        tradeSwitch(args.at(0), args.at(1), args.at(2));
+        break;
+      } else if (answer == "refuse") {
+        cout << args.at(0) << " has refused your trade proposal." << endl;
+        break;
+      } else {
+        cout << "Invalid answer. Please enter 'accept' or 'refuse'."
+             << std::endl;
+      }
+    } catch (Disallowed &e) {
+      gameBoard->update(e.getMessage(), false);
+      continue;
     }
   }
 }
@@ -666,7 +683,8 @@ void Game::auctionLoop(Property *p) {
     if (biddingVector.size() == 1) { // when there is only one player left
       highestBidder->makePayment(highestBid);
       highestBidder->addProperty(p);
-      cout<<"Congrats! "<< biddingVector[0]->getInfo().name<< " bought the property for $" <<highestBid<<endl;
+      cout << "Congrats! " << biddingVector[0]->getInfo().name
+           << " bought the property for $" << highestBid << endl;
       break;
     }
     for (auto iter = biddingVector.begin(); iter != biddingVector.end();
@@ -686,9 +704,10 @@ void Game::auctionLoop(Property *p) {
           continue;
         }
       }
-      cout<<"The current highest bid is " << highestBid << "."<< endl;
-      cout<<"How much do you want to bid? (Type 'quit' to withdraw "
-                        "from the auction)"<<endl;
+      cout << "The current highest bid is " << highestBid << "." << endl;
+      cout << "How much do you want to bid? (Type 'quit' to withdraw "
+              "from the auction)"
+           << endl;
 
       string input;
       getline(std::cin, input);
@@ -703,8 +722,9 @@ void Game::auctionLoop(Property *p) {
 
       bool is_quit = false;
       while (bid > currentPlayer->getInfo().balance) {
-        cout<< "You can't bid this much since you don't have enough balance"<<endl;
-        cout<< "Please re-enter the bid or quit." <<endl;
+        cout << "You can't bid this much since you don't have enough balance"
+             << endl;
+        cout << "Please re-enter the bid or quit." << endl;
         string input;
         getline(std::cin, input);
 
@@ -782,14 +802,15 @@ void Game::newGame() {
 }
 
 void Game::buyOrAuctionLoop() {
-  cout<<"Would you like to buy " <<
-      currPlayer->getInfo().currSquare->getInfo().name << " for $" <<
-      to_string(currPlayer->getInfo().currSquare->getInfo().cost) << "? (y/n) "<<endl;
+  cout << "Would you like to buy "
+       << currPlayer->getInfo().currSquare->getInfo().name << " for $"
+       << to_string(currPlayer->getInfo().currSquare->getInfo().cost)
+       << "? (y/n) " << endl;
   string choice;
   getline(cin, choice);
 
   while (choice != "y" && choice != "n") {
-    cout<<"Invalid input. Please enter 'y' or 'n': "<<endl;
+    cout << "Invalid input. Please enter 'y' or 'n': " << endl;
     getline(cin, choice);
   }
 
@@ -899,7 +920,7 @@ void Game::bankrupt(Player *owedTo) {
             continue;
 
           try {
-            if (cmd.args[0] == "cancel") {
+            if (cmd.args.at(0) == "cancel") {
               p->stepUpUnmortgageFee(extraFee);
               break;
             }
@@ -909,7 +930,7 @@ void Game::bankrupt(Player *owedTo) {
           }
 
           try {
-            if (cmd.args[0] == propInfo.name) {
+            if (cmd.args.at(0) == propInfo.name) {
               if (!owedTo->makePayment(unMortgageCost))
                 throw Disallowed{
                     "You don't have the money to unmortgage this property."};
