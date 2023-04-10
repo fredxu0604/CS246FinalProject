@@ -310,5 +310,6 @@ void NeedlesHall::triggerEvent(Player *p, std::vector<Square *> &squares,
     }
   } else {
     p->addFunds(gain);
+    cout<< "You have gained $" << gain << "." << endl;
   }
 }
