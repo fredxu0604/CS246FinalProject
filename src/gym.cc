@@ -4,11 +4,11 @@
 
 Gym::Gym(string name): Property{name} {}
 void Gym::improve() {
-    throw Disallowed{"Improvement on residence is not allowed"};
+    throw Disallowed{"Improvement on gyms are not allowed"};
 }
 
 void Gym::unimprove() {
-    throw Disallowed{"Improvement on residence is not allowed"};
+    throw Disallowed{"Improvement on gyms are not allowed"};
 }
 size_t Gym::getVisitFee() const {
     if (isMortgaged) {

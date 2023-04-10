@@ -85,6 +85,10 @@ Property *Player::validateImprovement(const string &propertyName) {
 
   SquareInfo targetPropertyInfo = targetProperty->getInfo();
 
+  if (targetPropertyInfo.type == PropertyType::Gym ||
+      targetPropertyInfo.type == PropertyType::Residence)
+      throw Disallowed{"Cannot improve non-academic properties."};
+
   if (!hasMonopoly(targetPropertyInfo.name)) {
     throw Disallowed{"You do not own all properties in this monopoly group."};
   }

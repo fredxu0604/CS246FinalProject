@@ -3,11 +3,9 @@
 #include "squareinfo.h"
 using namespace std;
 
-Property::Property(string name) : Square{name}, group{propertyGroupMap.at(name)}, isMortgaged{false}, numImprove{0}, unmortgageFeeAddon{0} {
+Property::Property(string name) : Square{name}, isMortgaged{false}, numImprove{0}, unmortgageFeeAddon{0} {
   owner = nullptr;
   isMortgaged = false;
-  group = propertyGroupMap.at(name); // using at because map[] only support non
-                                     // constant value; here is constant map
 }
 
 void Property::setOwner(Player *player) { owner = player; }

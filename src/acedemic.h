@@ -7,6 +7,7 @@
 class Acedemic : public Property {
 protected:
   unsigned int numImprove;
+  Group group;
 
 public:
   Acedemic(string name);

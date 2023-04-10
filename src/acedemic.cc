@@ -1,8 +1,10 @@
 #include "acedemic.h"
 #include "gameexception.h"
+#include "property.h"
 #include <map>
 
-Acedemic::Acedemic(string name) : Property{name} { numImprove = 0; }
+Acedemic::Acedemic(string name)
+    : Property{name}, numImprove{0}, group{propertyGroupMap.at(name)} {}
 
 void Acedemic::improve() {
   if (numImprove == 5) {

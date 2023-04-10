@@ -92,7 +92,6 @@ const std::vector<std::string> allOwnableProperties{
 
 class Property : public Square {
 protected:
-  Group group;
   Player *owner;
   bool isMortgaged;
   int numImprove;
