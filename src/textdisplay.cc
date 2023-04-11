@@ -5,6 +5,7 @@
 #include "command.h"
 #include "player.h"
 #include "square.h"
+#include "property.h"
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -37,13 +38,26 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info,
     out << std::endl;
   }
 
+  
   // Print players' information
   for (auto player : board_info.players) {
     auto playerInfo = player->getInfo();
     out << playerInfo.name << " (balance: $" << playerInfo.balance << ")"
-        << "(current location " << playerInfo.currSquare->getInfo().name << ")"  
+        << "(current location " << playerInfo.currSquare->getInfo().name << ")"
         << std::endl;
+  
+    // Print properties and improvement information for each player
+    out << "Owned Properties: " << std::endl;
+    for (const auto &property : playerInfo.ownedProperties) {
+      auto propInfo = property->getInfo();
+      out << "- " << propInfo.name;
+      if (propInfo.isProperty) {
+        out << " (Improvements: " << propInfo.numImprove << ")";
+      }
+      out << std::endl;
+    }
   }
+  
 
   // Print the current player
   auto currPlayerInfo = board_info.currPlayer->getInfo();
