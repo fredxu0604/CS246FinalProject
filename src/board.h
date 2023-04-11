@@ -26,6 +26,8 @@ public:
                                   // prints the board if printBoard is true.
   void setCurrPlayer(Player *np);
   Command readCommand();
+
+  void setPlayers(const std::vector<Player *> &newPlayers);
   ~Board();
 };
 

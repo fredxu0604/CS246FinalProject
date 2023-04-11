@@ -27,3 +27,7 @@ void Board::setCurrPlayer(Player *np) { currPlayer = np; }
 Board::~Board() { delete td; }
 
 Command Board::readCommand() { return td->readCommand(); }
+
+void Board::setPlayers(const std::vector<Player *> &newPlayers) {
+  thePlayers = newPlayers;
+}

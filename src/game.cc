@@ -981,6 +981,7 @@ void Game::bankrupt(Player *owedTo) {
       break;
     }
   }
+  gameBoard->setPlayers(players);
 
   gameState = GameState::PreRoll;
 }
