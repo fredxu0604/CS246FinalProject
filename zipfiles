@@ -1,0 +1,3 @@
+#!/bin/bash
+
+zip watopoly.zip src/*.h src/*.cc src/Makefile design.pdf uml.pdf
