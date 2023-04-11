@@ -26,7 +26,7 @@ class Game {
   std::vector<Player *> players;
 
   void roll(int die1 = 0, int die2 = 0); // implemented
-  void next();                           // implemented
+  void next(bool notify = true);                           // implemented
 
   void createSquares(); // implemented
 
@@ -66,7 +66,7 @@ class Game {
   void displayAll();    // implemented
   void displayAssets(); // implemented
 
-  void auctionLoop(Property *p); // implemented
+  void auctionLoop(Property *p, Player *exclude = nullptr); // implemented
 
   // void useCup();
 

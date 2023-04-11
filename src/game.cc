@@ -340,12 +340,13 @@ void Game::runGameLoop() {
         if (players.size() == before) {
           // the player did not go bankrupt!
           currPlayer->makeUnstuck();
-          gameBoard->update("Congrats! You are no longer stuck. Feel free to leave by rolling.");
+          gameBoard->update("Congrats! You are no longer stuck. Feel free to "
+                            "leave by rolling.");
           gameState = GameState::PreRoll;
         }
 
+        gameBoard->update();
       }
-      
     }
     Command cmd = gameBoard->readCommand();
 
@@ -550,7 +551,7 @@ void Game::moneyCriticalLoop(size_t owes, Player *owedTo) {
 
     case CommandType::Bankrupt:
       bankrupt(owedTo);
-      break;
+      return;
 
     default:
       cannotUseThisCommand();
@@ -643,13 +644,15 @@ int Game::getPlayerIdx(Player *p) {
   return -1;
 }
 
-void Game::next() {
+void Game::next(bool notify) {
   gameState = GameState::PreRoll;
   int cpIdx = getPlayerIdx(currPlayer);
 
   currPlayer = players[(cpIdx + 1) % players.size()];
   gameBoard->setCurrPlayer(currPlayer);
-  gameBoard->update("It is now " + currPlayer->getInfo().name + "'s turn.");
+  
+  if (notify)
+    gameBoard->update("It is now " + currPlayer->getInfo().name + "'s turn.");
 }
 
 void Game::roll(int die1, int die2) {
@@ -689,79 +692,67 @@ int Game::getSquareIdx(Square *sp) {
   return -1;
 }
 
-void Game::auctionLoop(Property *p) {
-  std::vector<Player *> biddingVector(players);
+void Game::auctionLoop(Property *p, Player *exclude) {
+  std::vector<Player *> biddingVector{};
+
+  for (auto player : players) {
+    if (exclude && (player == exclude))
+      continue;
+
+    biddingVector.emplace_back(player);
+  }
+
   size_t highestBid = 0;
-  Player *highestBidder = nullptr;
   gameBoard->update("Now we are bidding for the asset " + p->getInfo().name);
   while (biddingVector.size() > 0) {
-    if (biddingVector.size() == 1) { // when there is only one player left
-      highestBidder->makePayment(highestBid);
-      highestBidder->addProperty(p);
-      cout << "Congrats! " << biddingVector[0]->getInfo().name
-           << " bought the property for $" << highestBid << endl;
-      break;
-    }
+
     for (auto iter = biddingVector.begin(); iter != biddingVector.end();
          ++iter) {
       Player *currentPlayer = *iter;
-      gameBoard->update("Now it's " + currentPlayer->getInfo().name +
-                        "'s turn.");
 
-      if (currentPlayer == highestBidder) {
-        // If the current player has already bid the highest amount, they can
-        // pass.
-        gameBoard->update("You have already bid the highest amount. Type "
-                          "'pass' to skip this turn.");
-        string input;
-        getline(cin, input);
-        if (input == "pass") {
-          continue;
-        }
-      }
+      gameBoard->update(
+          "Now it's " + currentPlayer->getInfo().name + "'s turn.", false);
+
       cout << "The current highest bid is " << highestBid << "." << endl;
       cout << "How much do you want to bid? (Type 'quit' to withdraw "
               "from the auction)"
            << endl;
 
-      string input;
-      getline(std::cin, input);
-
-      if (input == "quit") {
-        biddingVector.erase(iter);
-        --iter;
-        continue;
-      }
-
-      size_t bid = stoul(input);
-
-      bool is_quit = false;
-      while (bid > currentPlayer->getInfo().balance) {
-        cout << "You can't bid this much since you don't have enough balance"
-             << endl;
-        cout << "Please re-enter the bid or quit." << endl;
+      while (true) {
         string input;
         getline(std::cin, input);
 
         if (input == "quit") {
           biddingVector.erase(iter);
           --iter;
-          is_quit = true;
-          bid = highestBid;
+          if (biddingVector.size() == 1) { // when there is only one player left
+            biddingVector.at(0)->makePayment(highestBid);
+            biddingVector.at(0)->addProperty(p);
+            cout << "Congrats! " << biddingVector.at(0)->getInfo().name
+                 << " bought the property for $" << highestBid << endl;
+            return;
+          }
           break;
         }
 
         size_t bid = stoul(input);
-      }
 
-      if (bid <= highestBid && !is_quit) {
-        gameBoard->update(
-            "Your bid must be higher than the current highest bid.");
-        continue;
-      }
+        if (bid > currentPlayer->getInfo().balance) {
+          cout << "You can't bid this much since you don't have enough balance"
+               << endl;
+          cout << "Please re-enter the bid or quit." << endl;
+          continue;
+        }
 
-      highestBid = bid;
-      highestBidder = currentPlayer;
+        if (bid <= highestBid) {
+          gameBoard->update(
+              "Your bid must be higher than the current highest bid.", false);
+          continue;
+        }
+
+        highestBid = bid;
+        break;
+      }
     }
   }
 }
@@ -830,14 +821,18 @@ void Game::buyOrAuctionLoop() {
   }
 
   if (choice == "y") {
-    try{
-      currPlayer->buyProperty(findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
-    } catch (Disallowed &e){
-      cout << "You don't have enough money to buy property. This property must be auctioned."<< endl;
+    try {
+      currPlayer->buyProperty(
+          findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+    } catch (Disallowed &e) {
+      cout << "You don't have enough money to buy property. This property must "
+              "be auctioned."
+           << endl;
       auctionLoop(
-        findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
+          findPropertyByName(currPlayer->getInfo().currSquare->getInfo().name));
     }
-    gameBoard->update("Congratulations! " + currPlayer->getInfo().name + " is now the owner of " +
+    gameBoard->update("Congratulations! " + currPlayer->getInfo().name +
+                      " is now the owner of " +
                       currPlayer->getInfo().currSquare->getInfo().name + ".");
   } else {
     auctionLoop(
@@ -875,7 +870,7 @@ void Game::bankrupt(Player *owedTo) {
 
     for (auto p : pInfo.ownedProperties) {
       p->setUnmortgaged();
-      auctionLoop(p);
+      auctionLoop(p, currPlayer);
     }
   } else {
 
@@ -972,7 +967,7 @@ void Game::bankrupt(Player *owedTo) {
 
   vector<Player *>::iterator it = players.begin();
   Player *bankruptPlayer = currPlayer;
-  next();
+  next(false);
 
   for (; it != players.end(); it++) {
     if (*it == bankruptPlayer) {
