@@ -38,7 +38,7 @@ void TextDisplay::print(std::ostream &out, const BoardInfo &board_info,
   }
 
   // Print players' information
-  for (const auto &player : board_info.players) {
+  for (auto player : board_info.players) {
     auto playerInfo = player->getInfo();
     out << playerInfo.name << " (balance: $" << playerInfo.balance << ")"
         << "(current location " << playerInfo.currSquare->getInfo().name << ")"  

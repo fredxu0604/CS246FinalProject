@@ -348,7 +348,7 @@ void Game::runGameLoop() {
                             "leave by rolling.");
           gameState = GameState::PreRoll;
         }
-
+        gameBoard->setCurrPlayer(currPlayer);
         gameBoard->update();
       }
     }
@@ -395,6 +395,7 @@ void Game::runGameLoop() {
           cannotUseThisCommand();
         } else {
           next();
+          gameBoard->setCurrPlayer(currPlayer);
         }
         break;
 
