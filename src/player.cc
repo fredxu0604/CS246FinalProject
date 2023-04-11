@@ -122,6 +122,8 @@ void Player::buyImprovement(const string &propertyName) {
     targetProperty->improve();
     makePayment(targetPropertyInfo.improvementCost);
     assets += targetPropertyInfo.improvementCost;
+    cout<<"You have succesfully build one more improvement here."<< endl;
+    cout << "Currently there are " << targetPropertyInfo.numImprove << " improvements."<< endl;
   } catch (Disallowed &e) {
     throw;
   }
@@ -142,6 +144,8 @@ void Player::sellImprovement(const string &propertyName) {
     targetProperty->unimprove();
     balance += targetPropertyInfo.improvementRefund;
     assets -= targetPropertyInfo.improvementCost;
+    cout<< "You have succesfully unimprove one improvement here." << endl;
+    cout << "Currently there are " << targetPropertyInfo.numImprove << " improvements."<< endl;
 
   } catch (Disallowed &e) {
     throw;

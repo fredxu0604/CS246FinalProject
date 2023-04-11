@@ -247,7 +247,11 @@ void Game::handleArrival() {
       Player *pOwner = pInfo.owner;
 
       if (pOwner != nullptr) {
-
+        // land on your own property
+        if (currPlayer == pp->getInfo().owner) {
+          cout<<"You have land on your own property. Welcome Home!" << endl;
+          return;
+        }
         size_t visitFee = pp->getVisitFee();
 
         gameBoard->update("This property is owned by " +
